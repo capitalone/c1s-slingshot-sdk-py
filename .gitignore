@@ -1,0 +1,14 @@
+__pycache__
+*/__pycache__/*
+.vscode
+*.swp
+*.swo
+venv/*
+.idea/*
+.python-version
+.DS_Store
+.venv
+tmp
+dist/*
+.coverage
+coverage.xml
