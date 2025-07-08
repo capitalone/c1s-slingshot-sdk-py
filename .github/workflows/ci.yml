@@ -42,7 +42,7 @@ jobs:
 
       - name: Install dependencies (${{ matrix.resolution }} resolution)
         run: |
-          uv sync --dev --resolution=${{ matrix.resolution }}
+          uv sync --dev --resolution=${{ matrix.resolution }} --python=${{ matrix.python-version }}
 
       - name: Run tests
         run: |
