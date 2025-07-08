@@ -45,7 +45,7 @@ target-version = "py39"
 docstring-code-format = true
 
 [tool.ruff.lint]
-ignore = ["B903", "D100", "E501"]
+ignore = ["B903", "D100", "D104", "E501"]
 preview = true
 select = [
     "ASYNC",
