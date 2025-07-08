@@ -3,7 +3,7 @@ import pytest
 from slingshot.client import SlingshotClient
 
 
-@pytest.skip("Not ready yet")
+@pytest.mark.skip("Not ready yet")
 def test_get_project(client: SlingshotClient) -> None:
     """Test fetching a project by its ID."""
     project_id = "test-project-id"
