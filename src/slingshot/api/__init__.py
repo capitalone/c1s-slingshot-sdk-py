@@ -1,0 +1,1 @@
+"""Slingshot API client."""

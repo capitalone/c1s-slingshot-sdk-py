@@ -1,21 +1,13 @@
-import json
+import pytest
+
+from slingshot.client import SlingshotClient
 
 
-def get_aws_rec_from_file():
-    with open("tests/test_files/aws_recommendation.json") as rec_in:
-        return json.loads(rec_in.read())
+@pytest.fixture(scope="session")
+def client() -> SlingshotClient:
+    """Fixture to create a SlingshotClient instance for testing."""
+    # Use a test API key and URL for testing purposes
+    api_key = "test_api_key"
+    api_url = "https://test.slingshot.capitalone.com/api"
 
-
-def get_azure_rec_from_file():
-    with open("tests/test_files/azure_recommendation.json") as rec_in:
-        return json.loads(rec_in.read())
-
-
-def get_project_from_file():
-    with open("tests/test_files/project.json") as project_in:
-        return json.loads(project_in.read())
-
-
-def get_job_from_file():
-    with open("tests/test_files/databricks_job.json") as job_in:
-        return json.loads(job_in.read())
+    return SlingshotClient(api_key=api_key, api_url=api_url)
