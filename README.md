@@ -7,12 +7,54 @@ The Slingshot Library provides drop-in functions facilitating integration betwee
 *Note*: This library is under active development and may contain features not yet fully supported.
 
 - [Capital One Slingshot SDK Python Library](#capital-one-slingshot-sdk-python-library)
+  - [Quick Start](#quick-start)
+  - [Development Setup](#development-setup)
   - [Contribution Guidelines](#contribution-guidelines)
     - [Documentation](#documentation)
     - [Releases](#releases)
   - [CLI](#cli)
   - [Developer Interface](#developer-interface)
   - [Configuration](#configuration)
+
+## Quick Start
+
+To get started with the Slingshot SDK, you can use the provided Makefile for easy setup:
+
+```bash
+make bootstrap
+```
+
+This single command will:
+- Install `uv` if not already available
+- Create a virtual environment
+- Install all dependencies
+- Set up pre-commit hooks
+- Run the test suite
+
+## Development Setup
+
+The project uses a Makefile to streamline common development tasks. Here are the available commands:
+
+### Bootstrap Everything
+```bash
+make bootstrap
+```
+Complete project setup - this is what you want to run first!
+
+### Individual Setup Steps
+```bash
+make install-uv      # Install uv package manager if not found
+make setup-venv      # Create virtual environment with uv
+make sync            # Sync dependencies with uv
+make test            # Run the test suite
+make install-precommit # Install pre-commit hooks
+```
+
+### Utility Commands
+```bash
+make clean           # Clean up build artifacts and cache files
+make help            # Show all available commands
+```
 
 ## Contribution Guidelines
 
