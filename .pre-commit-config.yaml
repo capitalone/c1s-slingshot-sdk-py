@@ -18,3 +18,11 @@ repos:
           - "--autofix"
           - "--indent=4"
       - id: requirements-txt-fixer
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: uv run pyright
+        language: system
+        types: [python]
+        require_serial: true
