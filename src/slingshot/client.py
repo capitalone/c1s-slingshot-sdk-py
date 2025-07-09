@@ -3,6 +3,7 @@ import os
 from functools import cached_property
 from typing import TYPE_CHECKING, Literal, Optional
 
+import backoff
 import httpx
 
 from slingshot.types import JSON_TYPE
@@ -16,6 +17,13 @@ USER_AGENT = f"Slingshot Library/{__vers} (c1s-slingshot-sdk-py)"
 DEFAULT_API_URL = "https://slingshot.capitalone.com/api"
 
 logger = logging.getLogger(__name__)
+
+
+def httpx_giveup_codes(e: Exception) -> bool:
+    """Determine whether to give up on retrying based on the HTTP status code."""
+    if not isinstance(e, httpx.HTTPStatusError):
+        return False
+    return e.response is not None and e.response.status_code not in {500, 503, 502, 504, 429}
 
 
 class SlingshotClient:
@@ -51,6 +59,13 @@ class SlingshotClient:
                 )
         self._api_key = api_key
 
+    @backoff.on_exception(
+        backoff.expo,
+        httpx.HTTPStatusError,
+        logger=logger,
+        max_tries=5,
+        giveup=httpx_giveup_codes,
+    )
     def _api_request(
         self, method: Literal["GET", "POST", "PUT", "DELETE"], endpoint: str
     ) -> JSON_TYPE:
