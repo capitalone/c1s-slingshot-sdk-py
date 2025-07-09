@@ -23,7 +23,13 @@ def httpx_giveup_codes(e: Exception) -> bool:
     """Determine whether to give up on retrying based on the HTTP status code."""
     if not isinstance(e, httpx.HTTPStatusError):
         return False
-    return e.response is not None and e.response.status_code not in {500, 503, 502, 504, 429}
+    if e.request.method in {"GET", "DELETE", "HEAD"}:
+        # Only retry GET requests
+        return e.response is not None and e.response.status_code in {500, 503, 502, 504, 429}
+    if e.request.method in {"POST", "PUT"}:
+        # For POST, PUT, DELETE, do not retry on server errors
+        return e.response is not None and e.response.status_code in {429}
+    return False
 
 
 class SlingshotClient:
