@@ -1,6 +1,6 @@
 # Makefile for Slingshot SDK Python project
 
-.PHONY: help bootstrap install-uv setup-venv sync test install-precommit clean changelog commit
+.PHONY: help bootstrap install-uv setup-venv sync test check install-precommit clean
 
 # Default target
 help:
@@ -9,10 +9,9 @@ help:
 	@echo "  install-uv     - Install uv if not found"
 	@echo "  setup-venv     - Create virtual environment with uv"
 	@echo "  sync           - Sync dependencies with uv"
-	@echo "  test           - Run tests"
+	@echo "  test [VERSION] [RESOLUTION] - Run tests (e.g., 'make test', 'make test 3.11', 'make test 3.11 lowest')"
+	@echo "  check          - Run full CI pipeline locally (lint, typecheck, test)"
 	@echo "  install-precommit - Install pre-commit hooks"
-	@echo "  commit         - Show conventional commit format examples"
-	@echo "  changelog      - Generate changelog from git commits"
 	@echo "  clean          - Clean up build artifacts and cache"
 
 # Bootstrap everything
@@ -44,34 +43,47 @@ sync:
 
 # Run tests
 test:
-	@echo "🧪 Running tests..."
-	@uv run pytest
+	@ARGS="$(filter-out test,$(MAKECMDGOALS))"; \
+	if [ -z "$$ARGS" ]; then \
+		echo "🧪 Running quick tests across all Python versions..."; \
+		for version in 3.9 3.10 3.11 3.12 3.13; do \
+			echo "🐍 Testing Python $$version..."; \
+			uv run --python=$$version pytest tests/ -v; \
+		done; \
+	else \
+		set -- $$ARGS; \
+		VERSION="$$1"; \
+		RESOLUTION="$$2"; \
+		if [ -n "$$RESOLUTION" ]; then \
+			echo "🧪 Running tests for Python $$VERSION with $$RESOLUTION resolution..."; \
+			uv run --resolution=$$RESOLUTION --python=$$VERSION pytest tests/ -v; \
+		else \
+			echo "🧪 Running tests for Python $$VERSION..."; \
+			uv run --python=$$VERSION pytest tests/ -v; \
+		fi; \
+	fi
 	@echo "✅ Tests completed"
+
+# Prevent make from interpreting version numbers as targets
+%:
+	@:
+
+# Full CI check (lint, typecheck, test)
+check:
+	@echo "🚀 Running full CI pipeline locally..."
+	@echo "🔍 Running pre-commit hooks..."
+	@uv run pre-commit run --all-files
+	@echo "🔍 Running type checking..."
+	@uv run pyright
+	@echo "🧪 Running tests for Python 3.11..."
+	@uv run --python=3.11 pytest tests/ -v
+	@echo "✅ CI pipeline completed"
 
 # Install pre-commit hooks
 install-precommit:
 	@echo "🎣 Installing pre-commit hooks..."
 	@uv run pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push
 	@echo "✅ Pre-commit hooks installed"
-
-# Interactive conventional commit
-commit:
-	@echo "📝 Creating conventional commit..."
-	@echo "Use git commit with one of these formats:"
-	@echo "  feat: add new feature"
-	@echo "  fix: resolve bug"
-	@echo "  docs: update documentation"
-	@echo "  style: formatting changes"
-	@echo "  refactor: code restructuring"
-	@echo "  test: add or update tests"
-	@echo "  chore: maintenance tasks"
-
-# Generate changelog from git commits
-changelog:
-	@echo "📝 Generating changelog from git commits..."
-	@git log --oneline --decorate --graph --since="$(shell git describe --tags --abbrev=0 2>/dev/null || echo '1 year ago')" --pretty=format:"- %s (%h)" > CHANGELOG_TEMP.md
-	@echo "✅ Changelog generated in CHANGELOG_TEMP.md"
-	@echo "📋 Review and merge into CHANGELOG.md manually"
 
 # Clean up
 clean:

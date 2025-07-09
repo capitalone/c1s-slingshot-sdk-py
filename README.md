@@ -46,9 +46,20 @@ Complete project setup - this is what you want to run first!
 make install-uv      # Install uv package manager if not found
 make setup-venv      # Create virtual environment with uv
 make sync            # Sync dependencies with uv
-make test            # Run the test suite
+make test            # Run tests across all Python versions
 make install-precommit # Install pre-commit hooks
 ```
+
+### Testing Commands
+```bash
+make test                    # Run tests across all Python versions (3.9-3.13)
+make test 3.11               # Run tests for specific Python version
+make test 3.11 lowest        # Run tests with specific Python version and dependency resolution
+make test 3.11 highest       # Run tests with specific Python version and highest dependency resolution
+make check                   # Run full CI pipeline locally (lint, typecheck, test)
+```
+
+The testing system automatically handles different Python versions and dependency resolutions using `uv`, ensuring compatibility across your supported environment matrix.
 
 ### Utility Commands
 ```bash
