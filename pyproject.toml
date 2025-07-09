@@ -25,7 +25,7 @@ dependencies = [
 description = "Slingshot SDK"
 name = "c1s-slingshot-sdk-py"
 readme = "README.md"
-requires-python = ">=3.8,<3.14"
+requires-python = ">=3.9,<3.14"
 version = "0.0.1"
 
 [tool.hatch.build.targets.wheel]
@@ -85,8 +85,9 @@ dev = [
     "ruff>=0.12.2",
     "ty>=0.0.1a14",
     # Pin dev-only transitive dependencies
-    "colorama>=0.4.0",  # pytest
+    "colorama>=0.4.0", # pytest
     "iniconfig>=1.1.0", # pytest
-    "packaging>=21.0",  # pytest
+    "packaging>=21.0", # pytest
     "pyparsing>=2.4.0", # pytest
+    "pytest-httpx>=0.35.0",
 ]

@@ -31,7 +31,7 @@ class ProjectAPI:
 
         """
         try:
-            response = self.client._api_request(method="GET", endpoint=f"/projects/{project_id}")
+            response = self.client._api_request(method="GET", endpoint=f"/v1/projects/{project_id}")
             return cast(ProjectSchema, response)
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 404:
