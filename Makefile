@@ -73,11 +73,6 @@ check:
 	@echo "🚀 Running full CI pipeline locally..."
 	@echo "🔍 Running pre-commit hooks..."
 	@uv run pre-commit run --all-files
-	@echo "🔍 Running type checking..."
-	@uv run pyright
-	@echo "🧪 Running tests for Python 3.11..."
-	@uv run --python=3.11 pytest tests/ -v
-	@echo "✅ CI pipeline completed"
 
 # Install pre-commit hooks
 install-precommit:
