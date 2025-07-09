@@ -1,6 +1,8 @@
 """Types used throughout this SDK."""
 
-from typing import Optional, TypedDict, Union
+from __future__ import annotations
+
+from typing import TypedDict, Union
 
 JSON_TYPE = Union[dict[str, "JSON_TYPE"], list["JSON_TYPE"], str, int, float, bool, None]
 
@@ -11,5 +13,5 @@ class ProjectSchema(TypedDict):
     created_at: str
     updated_at: str
     id: str
-    name: Optional[str]
-    app_id: Optional[str]
+    name: str | None
+    app_id: str | None
