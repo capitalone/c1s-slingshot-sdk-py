@@ -1,3 +1,4 @@
+import os
 from typing import Literal
 
 import pytest
@@ -62,8 +63,6 @@ def test_post_put_retries_on_status_code(
 
 def test_api_key_from_env(client: SlingshotClient, httpx_mock: HTTPXMock) -> None:
     """Test that the API key can be set from environment variable."""
-    import os
-
     os.environ["SLINGSHOT_API_KEY"] = "test_api_key"
     client_with_env_key = SlingshotClient()
     httpx_mock.add_response(
@@ -77,6 +76,7 @@ def test_api_key_from_env(client: SlingshotClient, httpx_mock: HTTPXMock) -> Non
         },
     )
     client_with_env_key.projects.get_project(project_id="test_project")
+    del os.environ["SLINGSHOT_API_KEY"]  # no leaks
 
 
 def test_no_api_key_raises_error() -> None:
