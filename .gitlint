@@ -1,0 +1,20 @@
+[general]
+# Ignore merge commits and revert commits
+# B6 = Body message is missing (allow commits without body)
+ignore=T3,T5,B6
+
+[title-max-length]
+# Max title length
+line-length=72
+
+[title-must-not-contain-word]
+# Prevent certain words in title
+words=WIP,wip
+
+[title-match-regex]
+# Enforce conventional commit format
+regex=^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+
+
+[body-max-line-length]
+# Max body line length
+line-length=100

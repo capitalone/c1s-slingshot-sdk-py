@@ -11,7 +11,7 @@ help:
 	@echo "  sync           - Sync dependencies with uv"
 	@echo "  test           - Run tests"
 	@echo "  install-precommit - Install pre-commit hooks"
-	@echo "  commit         - Interactive conventional commit"
+	@echo "  commit         - Show conventional commit format examples"
 	@echo "  changelog      - Generate changelog from git commits"
 	@echo "  clean          - Clean up build artifacts and cache"
 
@@ -57,7 +57,14 @@ install-precommit:
 # Interactive conventional commit
 commit:
 	@echo "📝 Creating conventional commit..."
-	@uv run cz commit
+	@echo "Use git commit with one of these formats:"
+	@echo "  feat: add new feature"
+	@echo "  fix: resolve bug"
+	@echo "  docs: update documentation"
+	@echo "  style: formatting changes"
+	@echo "  refactor: code restructuring"
+	@echo "  test: add or update tests"
+	@echo "  chore: maintenance tasks"
 
 # Generate changelog from git commits
 changelog:
