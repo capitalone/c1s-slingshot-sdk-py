@@ -23,7 +23,6 @@ def httpx_giveup_codes(e: Exception) -> bool:
     """Determine whether to give up on retrying based on the HTTP status code."""
     if not isinstance(e, httpx.HTTPStatusError):
         return False
-    print("METHOD2", e.request.method, e.response.status_code, e.response.status_code in {429})
     if e.response is None:
         return False
     if e.request.method in {"GET", "DELETE", "HEAD", "OPTIONS"}:
