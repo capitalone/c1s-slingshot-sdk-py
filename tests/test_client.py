@@ -58,3 +58,31 @@ def test_post_put_retries_on_status_code(
     )
     result = client._api_request(method=method, endpoint="/TEST")
     assert result == {"success": True}
+
+
+def test_api_key_from_env(client: SlingshotClient, httpx_mock: HTTPXMock) -> None:
+    """Test that the API key can be set from environment variable."""
+    import os
+
+    os.environ["SLINGSHOT_API_KEY"] = "test_api_key"
+    client_with_env_key = SlingshotClient()
+    httpx_mock.add_response(
+        method="GET",
+        url=f"{client_with_env_key._api_url}/v1/projects/test_project",
+        status_code=200,
+        json={"id": "test_project"},
+        match_headers={
+            "Auth": "test_api_key",
+            "User-Agent": "Slingshot Library/0.0.1 (c1s-slingshot-sdk-py)",
+        },
+    )
+    client_with_env_key.projects.get_project(project_id="test_project")
+
+
+def test_no_api_key_raises_error() -> None:
+    """Test that an error is raised if no API key is provided."""
+    with pytest.raises(
+        ValueError,
+        match="API key must be provided either as a parameter or in the environment variable SLINGSHOT_API_KEY",
+    ):
+        SlingshotClient(api_key=None)
