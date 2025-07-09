@@ -25,7 +25,7 @@ dependencies = [
 description = "Slingshot SDK"
 name = "c1s-slingshot-sdk-py"
 readme = "README.md"
-requires-python = ">=3.8,<3.13"
+requires-python = ">=3.8,<3.14"
 version = "0.0.1"
 
 [tool.hatch.build.targets.wheel]
