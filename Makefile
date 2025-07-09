@@ -1,6 +1,6 @@
 # Makefile for Slingshot SDK Python project
 
-.PHONY: help bootstrap install-uv setup-venv sync test install-precommit clean
+.PHONY: help bootstrap install-uv setup-venv sync test install-precommit clean changelog commit
 
 # Default target
 help:
@@ -11,6 +11,8 @@ help:
 	@echo "  sync           - Sync dependencies with uv"
 	@echo "  test           - Run tests"
 	@echo "  install-precommit - Install pre-commit hooks"
+	@echo "  commit         - Interactive conventional commit"
+	@echo "  changelog      - Generate changelog from git commits"
 	@echo "  clean          - Clean up build artifacts and cache"
 
 # Bootstrap everything
@@ -49,8 +51,20 @@ test:
 # Install pre-commit hooks
 install-precommit:
 	@echo "🎣 Installing pre-commit hooks..."
-	@uv run pre-commit install
+	@uv run pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push
 	@echo "✅ Pre-commit hooks installed"
+
+# Interactive conventional commit
+commit:
+	@echo "📝 Creating conventional commit..."
+	@uv run cz commit
+
+# Generate changelog from git commits
+changelog:
+	@echo "📝 Generating changelog from git commits..."
+	@git log --oneline --decorate --graph --since="$(shell git describe --tags --abbrev=0 2>/dev/null || echo '1 year ago')" --pretty=format:"- %s (%h)" > CHANGELOG_TEMP.md
+	@echo "✅ Changelog generated in CHANGELOG_TEMP.md"
+	@echo "📋 Review and merge into CHANGELOG.md manually"
 
 # Clean up
 clean:

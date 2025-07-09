@@ -1,0 +1,105 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: python
+          package-name: c1s-slingshot-sdk-py
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"docs","section":"Documentation","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
+
+  prerelease:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Generate prerelease version
+        id: version
+        run: |
+          # Get the latest tag or use 0.0.0 if no tags exist
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          # Remove 'v' prefix if present
+          LATEST_VERSION=${LATEST_TAG#v}
+          # Get commit count since last tag
+          COMMIT_COUNT=$(git rev-list --count HEAD ^${LATEST_TAG} 2>/dev/null || git rev-list --count HEAD)
+          # Get short commit hash
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          # Create prerelease version
+          PRERELEASE_VERSION="${LATEST_VERSION}.dev${COMMIT_COUNT}+${SHORT_SHA}"
+          echo "version=${PRERELEASE_VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated prerelease version: ${PRERELEASE_VERSION}"
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i 's/version = ".*"/version = "${{ steps.version.outputs.version }}"/' pyproject.toml
+
+      - name: Build package
+        run: |
+          uv sync --dev
+          uv build
+
+      - name: Publish prerelease to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip-existing: true
+
+  release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Get tag version
+        id: version
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=${TAG_VERSION}" >> $GITHUB_OUTPUT
+          echo "Tag version: ${TAG_VERSION}"
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i 's/version = ".*"/version = "${{ steps.version.outputs.version }}"/' pyproject.toml
+
+      - name: Build package
+        run: |
+          uv sync --dev
+          uv build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
