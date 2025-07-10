@@ -20,7 +20,7 @@ DEFAULT_API_URL = "https://slingshot.capitalone.com/api"
 logger = logging.getLogger(__name__)
 
 
-def httpx_giveup_codes(e: Exception) -> bool:
+def _httpx_giveup_codes(e: Exception) -> bool:
     """Determine whether to give up on retrying based on the HTTP status code."""
     if not isinstance(e, httpx.HTTPStatusError):
         return False
@@ -71,7 +71,7 @@ class SlingshotClient:
         httpx.HTTPStatusError,
         logger=logger,
         max_tries=5,
-        giveup=httpx_giveup_codes,
+        giveup=_httpx_giveup_codes,
     )
     def _api_request(
         self, method: Literal["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"], endpoint: str
