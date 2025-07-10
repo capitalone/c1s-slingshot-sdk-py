@@ -1,10 +1,13 @@
 import os
+from importlib.metadata import version as get_version
 from typing import Literal
 
 import pytest
 from pytest_httpx import HTTPXMock
 
 from slingshot.client import SlingshotClient
+
+__version__ = get_version("c1s-slingshot-sdk-py")
 
 
 @pytest.mark.parametrize(
@@ -72,7 +75,7 @@ def test_api_key_from_env(client: SlingshotClient, httpx_mock: HTTPXMock) -> Non
         json={"id": "test_project"},
         match_headers={
             "Auth": "test_api_key",
-            "User-Agent": "Slingshot Library/0.0.1 (c1s-slingshot-sdk-py)",
+            "User-Agent": f"Slingshot Library/{__version__} (c1s-slingshot-sdk-py)",
         },
     )
     client_with_env_key.projects.get_project(project_id="test_project")

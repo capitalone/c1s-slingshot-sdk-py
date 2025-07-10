@@ -40,7 +40,6 @@ wheels = [
 
 [[package]]
 name = "c1s-slingshot-sdk-py"
-version = "0.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "backoff" },
