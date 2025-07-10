@@ -1,3 +1,4 @@
+import importlib.metadata
 import logging
 import os
 from functools import cached_property
@@ -8,10 +9,10 @@ import httpx
 
 from slingshot.types import JSON_TYPE
 
-from .__version__ import __version__ as __vers
-
 if TYPE_CHECKING:
     from .api.projects import ProjectAPI
+
+__vers = importlib.metadata.version("c1s-slingshot-sdk-py")
 
 USER_AGENT = f"Slingshot Library/{__vers} (c1s-slingshot-sdk-py)"
 DEFAULT_API_URL = "https://slingshot.capitalone.com/api"

@@ -14,3 +14,4 @@ dist/*
 coverage.xml
 .ruff_cache
 .pytest_cache
+src/slingshot/__version__.py
