@@ -9,7 +9,7 @@ help:
 	@echo "  install-uv     - Install uv if not found"
 	@echo "  setup-venv     - Create virtual environment with uv"
 	@echo "  sync           - Sync dependencies with uv"
-	@echo "  test [VERSION] [RESOLUTION] - Run tests (e.g., 'make test', 'make test 3.11', 'make test 3.11 lowest')"
+	@echo "  test [VERSION] [RESOLUTION] - Run tests (e.g., 'make test', 'make test 3.9', 'make test 3.9 lowest')"
 	@echo "  check          - Run full CI pipeline locally (lint, typecheck, test)"
 	@echo "  install-precommit - Install pre-commit hooks"
 	@echo "  clean          - Clean up build artifacts and cache"
@@ -45,21 +45,30 @@ sync:
 test:
 	@ARGS="$(filter-out test,$(MAKECMDGOALS))"; \
 	if [ -z "$$ARGS" ]; then \
-		echo "🧪 Running quick tests across all Python versions..."; \
+		echo "🧪 Running test matrix across all Python versions and resolutions..."; \
 		for version in 3.9 3.10 3.11 3.12 3.13; do \
-			echo "🐍 Testing Python $$version..."; \
-			uv run --python=$$version pytest tests/ -v; \
+			for resolution in lowest highest; do \
+				echo "🐍 Testing Python $$version with $$resolution resolution..."; \
+				uv run --resolution=$$resolution --python=$$version pytest tests/ -v || exit 1; \
+			done; \
 		done; \
 	else \
 		set -- $$ARGS; \
 		VERSION="$$1"; \
 		RESOLUTION="$$2"; \
-		if [ -n "$$RESOLUTION" ]; then \
+		if [ -n "$$VERSION" ] && [ -n "$$RESOLUTION" ]; then \
 			echo "🧪 Running tests for Python $$VERSION with $$RESOLUTION resolution..."; \
 			uv run --resolution=$$RESOLUTION --python=$$VERSION pytest tests/ -v; \
+		elif [ -n "$$VERSION" ]; then \
+			echo "🧪 Running tests for Python $$VERSION with both resolutions..."; \
+			for resolution in lowest highest; do \
+				echo "🐍 Testing Python $$VERSION with $$resolution resolution..."; \
+				uv run --resolution=$$resolution --python=$$VERSION pytest tests/ -v || exit 1; \
+			done; \
 		else \
-			echo "🧪 Running tests for Python $$VERSION..."; \
-			uv run --python=$$VERSION pytest tests/ -v; \
+			echo "❌ Invalid arguments. Usage: make test [VERSION] [RESOLUTION]"; \
+			echo "   Examples: make test, make test 3.9, make test 3.9 lowest"; \
+			exit 1; \
 		fi; \
 	fi
 	@echo "✅ Tests completed"

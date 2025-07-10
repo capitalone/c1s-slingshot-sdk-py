@@ -21,6 +21,7 @@ dependencies = [
     "certifi>=2021.10.8", # httpx
     "idna>=2.8",          # httpx
     "sniffio>=1.2.0",     # httpx
+    "anyio>=2.0.0",       # httpx
 ]
 description = "Slingshot SDK"
 name = "c1s-slingshot-sdk-py"
