@@ -1,21 +1,20 @@
-import json
+import pytest
+from pytest_httpx import HTTPXMock
+
+from slingshot.client import SlingshotClient
 
 
-def get_aws_rec_from_file():
-    with open("tests/test_files/aws_recommendation.json") as rec_in:
-        return json.loads(rec_in.read())
+@pytest.fixture(scope="session")
+def api_key() -> str:
+    """Fixture to provide the API key for SlingshotClient."""
+    # Use a test API key for testing purposes
+    return "TENANTID~123~ad24a52646945572ad43654c7a0152a3b3fd55cf7cd1aea3a8e189692799dfc3"
 
 
-def get_azure_rec_from_file():
-    with open("tests/test_files/azure_recommendation.json") as rec_in:
-        return json.loads(rec_in.read())
+@pytest.fixture(scope="function")
+def client(api_key: str, httpx_mock: HTTPXMock) -> SlingshotClient:
+    """Fixture to create a SlingshotClient instance for testing."""
+    # Use a test API key and URL for testing purposes
+    api_url = "https://test.slingshot.capitalone.com/prod/api/gradient"
 
-
-def get_project_from_file():
-    with open("tests/test_files/project.json") as project_in:
-        return json.loads(project_in.read())
-
-
-def get_job_from_file():
-    with open("tests/test_files/databricks_job.json") as job_in:
-        return json.loads(job_in.read())
+    return SlingshotClient(api_key=api_key, api_url=api_url)

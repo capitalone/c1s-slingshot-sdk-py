@@ -1,7 +1,7 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.11.5
+    rev: v0.12.2
     hooks:
       # Run the linter.
       - id: ruff
@@ -18,3 +18,17 @@ repos:
           - "--autofix"
           - "--indent=4"
       - id: requirements-txt-fixer
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: uv run pyright
+        language: system
+        types: [python]
+        require_serial: true
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
+        stages: [commit-msg]
