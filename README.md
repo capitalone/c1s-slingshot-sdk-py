@@ -8,6 +8,7 @@
   - [Contribution Guidelines](#contribution-guidelines)
     - [Documentation](#documentation)
     - [Releases](#releases)
+    - [Commit Message Guidelines](#commit-message-guidelines)
   - [CLI](#cli)
   - [Developer Interface](#developer-interface)
   - [Configuration](#configuration)
@@ -68,3 +69,35 @@ The testing system automatically handles different Python versions and dependenc
 make clean           # Clean up build artifacts and cache files
 make help            # Show all available commands
 ```
+
+### Commit Message Guidelines
+
+When contributing to this project, please use the [Conventional Commit](https://www.conventionalcommits.org/) style for naming your commits. This ensures consistency and helps with automated versioning and changelog generation.
+
+A commit message should follow this format:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+#### Types
+
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation changes
+- **style**: Code style changes (formatting, missing semi-colons, etc.)
+- **refactor**: Code restructuring without changing functionality
+- **test**: Adding or updating tests
+- **chore**: Maintenance tasks (e.g., updating dependencies)
+
+#### Examples
+
+- `feat: add support for Python 3.13`
+- `fix: resolve issue with dependency resolution`
+- `docs: update README with commit guidelines`
+
+For more details, refer to the [Conventional Commit Specification](https://www.conventionalcommits.org/).
