@@ -27,19 +27,18 @@ description = "Slingshot SDK"
 name = "c1s-slingshot-sdk-py"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
-dynamic = [
-    "version",
-]
+version = "0.0.1a0"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/slingshot"]
 
-[tool.hatch.version]
-source = "vcs"
 
-[tool.hatch.build.hooks.vcs]
-version-file="src/slingshot/__version__.py"
-
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = true
 [project.urls]
 Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
 
@@ -93,9 +92,10 @@ dev = [
     "ruff>=0.12.2",
     "ty>=0.0.1a14",
     # Pin dev-only transitive dependencies
-    "colorama>=0.4.0",      # pytest
-    "iniconfig>=1.1.0",     # pytest
-    "packaging>=21.0",      # pytest
-    "pyparsing>=2.4.0",     # pytest
+    "colorama>=0.4.0", # pytest
+    "iniconfig>=1.1.0", # pytest
+    "packaging>=21.0", # pytest
+    "pyparsing>=2.4.0", # pytest
     "pytest-httpx>=0.35.0",
+    "commitizen>=4.8.3",
 ]
