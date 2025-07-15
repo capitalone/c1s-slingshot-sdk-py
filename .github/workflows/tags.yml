@@ -25,7 +25,3 @@ jobs:
 
       - name: Publish to PyPI
         run: uv publish
-        env:
-          # Use PyPI's trusted publishing (recommended)
-          # Alternative: use UV_PUBLISH_TOKEN with a PyPI API token
-          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
