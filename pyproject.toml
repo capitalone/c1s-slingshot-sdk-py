@@ -28,6 +28,8 @@ name = "c1s-slingshot-sdk-py"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
 version = "0.0.1a0"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/slingshot"]
@@ -41,6 +43,7 @@ version_provider = "uv"
 update_changelog_on_bump = true
 [project.urls]
 Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
+Changelog = "https://github.com/capitalone/c1-slingshot-sdk-py/blob/main/CHANGELOG.md"
 
 
 [tool.ruff]
