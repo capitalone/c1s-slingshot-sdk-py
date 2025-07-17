@@ -78,7 +78,10 @@ def test_api_key_from_env(client: SlingshotClient, httpx_mock: HTTPXMock) -> Non
             "User-Agent": f"Slingshot Library/{__version__} (c1s-slingshot-sdk-py)",
         },
     )
-    client_with_env_key.projects.get_project(project_id="test_project")
+    client_with_env_key.projects.get_project(
+        project_id="test_project",
+        include=[],
+    )
     del os.environ["SLINGSHOT_API_KEY"]  # no leaks
 
 
