@@ -79,7 +79,6 @@ dev = [
     { name = "colorama" },
     { name = "commitizen" },
     { name = "gitlint" },
-    { name = "identify" },
     { name = "iniconfig" },
     { name = "packaging" },
     { name = "pre-commit" },
@@ -105,10 +104,9 @@ dev = [
     { name = "colorama", specifier = ">=0.4.0" },
     { name = "commitizen", specifier = ">=4.8.3" },
     { name = "gitlint", specifier = ">=0.19.1" },
-    { name = "identify", specifier = ">=2.0.0" },
     { name = "iniconfig", specifier = ">=1.1.0" },
     { name = "packaging", specifier = ">=21.0" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
+    { name = "pre-commit", specifier = ">=3.5.0" },
     { name = "pyparsing", specifier = ">=2.4.0" },
     { name = "pyright", specifier = ">=1.1.402" },
     { name = "pytest", specifier = ">=8.3.5" },
@@ -298,11 +296,11 @@ wheels = [
 
 [[package]]
 name = "identify"
-version = "2.0.0"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b3/9d/7a95f087f3a84df163a782490b99b06fc4ba01f4d696d858df193e7ebca0/identify-2.0.0.tar.gz", hash = "sha256:b99aa309329c4fea679463eb35d169f3fbe13e66e9dd6162ad1856cbeb03dcbd", size = 98651, upload-time = "2021-03-01T15:25:04.202Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8b/2e/a372e46ff740550c8a0e07241bdf1cc60b957d58fd27a83d78aec19d9803/identify-1.0.0.tar.gz", hash = "sha256:4fe3572e378ae32ac5f958b99ad29a920ec4eee79edffaa348a755d4ac3d0270", size = 3912, upload-time = "2017-07-02T20:15:01.42Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/af/3a7b279865a65495b98ce6f5c3477edf71122cf898e75783de739dda8653/identify-2.0.0-py2.py3-none-any.whl", hash = "sha256:9cdd81e5d2b6e76c3006d5226316dd947bd6324fbeebb881bec489202fa09d3a", size = 97895, upload-time = "2021-03-01T15:25:02.455Z" },
+    { url = "https://files.pythonhosted.org/packages/d8/b6/4c30c505039f5ffa69cc3a565de4fa44b5c0e50e0c00cfa26101cb7cfcce/identify-1.0.0-py2.py3-none-any.whl", hash = "sha256:0d793387835609d548f9f8462e67f77e3022ea2b9458bb9b13f20979a41b25de", size = 6111, upload-time = "2017-07-02T20:14:59.256Z" },
 ]
 
 [[package]]
@@ -391,7 +389,7 @@ wheels = [
 
 [[package]]
 name = "pre-commit"
-version = "4.2.0"
+version = "3.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cfgv" },
@@ -400,9 +398,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/08/39/679ca9b26c7bb2999ff122d50faa301e49af82ca9c066ec061cfbc0c6784/pre_commit-4.2.0.tar.gz", hash = "sha256:601283b9757afd87d40c4c4a9b2b5de9637a8ea02eaff7adc2d0fb4e04841146", size = 193424, upload-time = "2025-03-18T21:35:20.987Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/04/b3/4ae08d21eb097162f5aad37f4585f8069a86402ed7f5362cc9ae097f9572/pre_commit-3.5.0.tar.gz", hash = "sha256:5804465c675b659b0862f07907f96295d490822a450c4c40e747d0b1c6ebcb32", size = 177079, upload-time = "2023-10-13T15:57:48.334Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/88/74/a88bf1b1efeae488a0c0b7bdf71429c313722d1fc0f377537fbe554e6180/pre_commit-4.2.0-py2.py3-none-any.whl", hash = "sha256:a009ca7205f1eb497d10b845e52c838a98b6cdd2102a6c8e4540e94ee75c58bd", size = 220707, upload-time = "2025-03-18T21:35:19.343Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/75/526915fedf462e05eeb1c75ceaf7e3f9cde7b5ce6f62740fe5f7f19a0050/pre_commit-3.5.0-py2.py3-none-any.whl", hash = "sha256:841dc9aef25daba9a0238cd27984041fa0467b4199fc4852e27950664919f660", size = 203698, upload-time = "2023-10-13T15:57:46.378Z" },
 ]
 
 [[package]]

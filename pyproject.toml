@@ -32,18 +32,17 @@ version = "0.0.1a0"
 [tool.hatch.build.targets.wheel]
 packages = ["src/slingshot"]
 
+
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "v$version"
 version_scheme = "pep440"
 version_provider = "uv"
+changelog_file = "docs/changelog.md"
 update_changelog_on_bump = true
-
 [project.urls]
 Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
 
-[tool.uv]
-resolution = "lowest"
 
 [tool.ruff]
 exclude = ["artifacts/*"]
@@ -88,7 +87,7 @@ useLibraryCodeForTypes = true
 [dependency-groups]
 dev = [
     "gitlint>=0.19.1",
-    "pre-commit>=4.2.0",
+    "pre-commit>=3.5.0",
     "pyright>=1.1.402",
     "pytest>=8.3.5",
     "ruff>=0.12.4",
@@ -97,7 +96,14 @@ dev = [
     "iniconfig>=1.1.0", # pytest
     "packaging>=21.0", # pytest
     "pyparsing>=2.4.0", # pytest
-    "identify>=2.0.0", # pre-commit
     "pytest-httpx>=0.35.0",
     "commitizen>=4.8.3",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "furo>=2024.1.29",
+    "myst-parser>=2.0.0",
+    "sphinx-autodoc-typehints>=1.25.0",
+    "sphinx-autobuild>=2024.2.4",
+    "linkify-it-py>=2.0.0",
 ]

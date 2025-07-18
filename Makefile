@@ -1,7 +1,7 @@
 # Makefile for Slingshot SDK Python project
 PYTHON_VERSIONS := 3.9 3.10 3.11 3.12 3.13
 
-.PHONY: help bootstrap install-uv setup-venv sync test check install-precommit clean
+.PHONY: help bootstrap install-uv setup-venv sync test check install-precommit clean docs docs-serve docs-clean
 
 # Default target
 help:
@@ -13,6 +13,9 @@ help:
 	@echo "  test [VERSION] [RESOLUTION] - Run tests (e.g., 'make test', 'make test 3.9', 'make test 3.9 lowest')"
 	@echo "  check          - Run full CI pipeline locally (lint, typecheck, test)"
 	@echo "  install-precommit - Install pre-commit hooks"
+	@echo "  docs           - Build documentation with Sphinx"
+	@echo "  docs-serve     - Build and serve documentation locally"
+	@echo "  docs-clean     - Clean documentation build artifacts"
 	@echo "  clean          - Clean up build artifacts and cache"
 
 # Bootstrap everything
@@ -107,6 +110,31 @@ install-precommit:
 	@uv run pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push
 	@echo "✅ Pre-commit hooks installed"
 
+# Build documentation with Sphinx
+docs:
+	@echo "📚 Building documentation with Sphinx..."
+	@uv run --group docs sphinx-build -b html docs/ docs/_build/html
+	@echo "✅ Documentation built successfully!"
+	@echo "📖 View at: file://$(PWD)/docs/_build/html/index.html"
+
+# Serve documentation locally
+docs-serve: docs
+	@echo "🚀 Serving documentation locally..."
+	@echo "📖 Opening http://localhost:8000"
+	@echo "Press Ctrl+C to stop the server"
+	@if [ -d "docs/_build/html" ]; then \
+		cd docs/_build/html && uv run python -m http.server 8000; \
+	else \
+		echo "❌ Documentation not built. Run 'make docs' first."; \
+		exit 1; \
+	fi
+
+# Clean documentation build artifacts
+docs-clean:
+	@echo "🧹 Cleaning documentation build artifacts..."
+	@rm -rf docs/_build/
+	@echo "✅ Documentation artifacts cleaned"
+
 # Clean up
 clean:
 	@echo "🧹 Cleaning up..."
@@ -118,4 +146,5 @@ clean:
 	@rm -rf dist/
 	@rm -rf build/
 	@rm -rf *.egg-info/
+	@rm -rf docs/_build/
 	@echo "✅ Cleanup completed"
