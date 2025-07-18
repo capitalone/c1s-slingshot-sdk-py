@@ -29,6 +29,9 @@ readme = "README.md"
 requires-python = ">=3.9,<3.14"
 version = "0.0.1a0"
 
+[tool.uv]
+resolution = "lowest"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/slingshot"]
 
@@ -87,7 +90,7 @@ useLibraryCodeForTypes = true
 [dependency-groups]
 dev = [
     "gitlint>=0.19.1",
-    "pre-commit>=3.5.0",
+    "pre-commit>=4.2.0",
     "pyright>=1.1.402",
     "pytest>=8.3.5",
     "ruff>=0.12.4",
@@ -96,14 +99,19 @@ dev = [
     "iniconfig>=1.1.0", # pytest
     "packaging>=21.0", # pytest
     "pyparsing>=2.4.0", # pytest
+    "identify>=2.0.0", # pre-commit
     "pytest-httpx>=0.35.0",
     "commitizen>=4.8.3",
 ]
 docs = [
     "sphinx>=7.0.0",
     "furo>=2024.1.29",
-    "myst-parser>=2.0.0",
-    "sphinx-autodoc-typehints>=1.25.0",
-    "sphinx-autobuild>=2024.2.4",
+    "myst-parser>=3.0.0",
+    "sphinx-autodoc-typehints>=2.3.0",
+    "sphinx-autobuild>=2024.10.3",
     "linkify-it-py>=2.0.0",
+    "beautifulsoup4>=4.13.4", # furo
+    "wcwidth>=0.2.13", # sphinx
+    "sphinxcontrib-qthelp>=1.0.0", # sphinx
+    "sphinxcontrib-devhelp>=1.0.0" ,# sphinx
 ]

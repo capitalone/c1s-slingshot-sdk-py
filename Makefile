@@ -53,13 +53,13 @@ install-python:
 # Create virtual environment
 setup-venv:
 	@echo "🐍 Setting up virtual environment..."
-	@uv venv --python 3.9
+	@uv venv --clear
 	@echo "✅ Virtual environment created"
 
 # Sync dependencies
 sync:
 	@echo "📦 Syncing dependencies..."
-	@uv sync --dev --resolution lowest --python 3.9
+	@uv sync --dev
 	@echo "✅ Dependencies synchronized"
 
 # Run tests
