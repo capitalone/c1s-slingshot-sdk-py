@@ -25,9 +25,9 @@ jobs:
       - name: Run pre-commit
         run: |
           uv run pre-commit run --all-files
-      - uses: gentleseal/action-conventional-commits@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test:
     runs-on: ubuntu-latest
     strategy:
