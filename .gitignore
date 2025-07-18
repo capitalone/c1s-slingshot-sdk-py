@@ -5,6 +5,7 @@ __pycache__
 *.swo
 venv/*
 .idea/*
+.python-version
 .DS_Store
 .venv
 tmp
@@ -14,3 +15,7 @@ coverage.xml
 .ruff_cache
 .pytest_cache
 src/slingshot/__version__.py
+
+# Documentation build artifacts
+docs/_build/
+docs/_static/doctrees/

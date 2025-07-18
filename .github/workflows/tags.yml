@@ -4,6 +4,16 @@ on:
   push:
     tags:
       - v*
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "deploy"
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -22,6 +32,21 @@ jobs:
 
       - name: Build package
         run: uv build
+      - name: Build documentation
+        run: |
+          uv run --group docs sphinx-build -b html docs docs/_build/html -W --keep-going
+      - name: Upload Pages artifact
+        id: upload
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_build/html
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        env:
+          name: github-pages
+          url: ${{ steps.upload.outputs.page_url }}
 
       - name: Publish to PyPI
         run: uv publish
@@ -35,3 +60,13 @@ jobs:
             --title "$tag" \
             --latest \
             --generate-notes
+  deploy-docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
