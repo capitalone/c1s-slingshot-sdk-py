@@ -9,6 +9,9 @@ on:
     # Run daily at 6:00 AM UTC (2:00 AM EST)
     - cron: "0 6 * * *"
 
+permissions:
+  pull-requests: write
+
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
