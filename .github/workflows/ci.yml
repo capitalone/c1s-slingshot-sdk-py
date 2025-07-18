@@ -25,9 +25,9 @@ jobs:
       - name: Run pre-commit
         run: |
           uv run pre-commit run --all-files
-      - uses: webiny/action-conventional-commits@v1.3.0
+      - uses: gentleseal/action-conventional-commits@master
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
   test:
     runs-on: ubuntu-latest
     strategy:
