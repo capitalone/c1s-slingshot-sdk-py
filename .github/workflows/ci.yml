@@ -25,8 +25,9 @@ jobs:
       - name: Run pre-commit
         run: |
           uv run pre-commit run --all-files
-      - name: Conventional commit check
-        uses: cocogitto/cocogitto-action@v3
+      - uses: webiny/action-conventional-commits@v1.3.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test:
     runs-on: ubuntu-latest
     strategy:
