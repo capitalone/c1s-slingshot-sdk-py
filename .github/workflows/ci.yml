@@ -25,10 +25,9 @@ jobs:
       - name: Run pre-commit
         run: |
           uv run pre-commit run --all-files
-      - uses: webiny/action-conventional-commits@v1.3.0
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: check-for-cc
+        id: check-for-cc
+        uses: agenthunt/conventional-commit-checker-action@v1.0.0
   test:
     runs-on: ubuntu-latest
     strategy:
