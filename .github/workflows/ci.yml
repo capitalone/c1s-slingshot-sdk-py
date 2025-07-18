@@ -27,7 +27,8 @@ jobs:
           uv run pre-commit run --all-files
       - name: check-for-cc
         id: check-for-cc
-        uses: agenthunt/conventional-commit-checker-action@v1.0.0
+        uses: taskmedia/action-conventional-commits@v1.1.20
+
   test:
     runs-on: ubuntu-latest
     strategy:
