@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Literal, Optional
 import backoff
 import httpx
 
-from slingshot.types import JSON_TYPE
+from slingshot.types import JSON_TYPE, UNSET, QueryParams
 
 from .__vers import __version__
 
@@ -31,6 +31,18 @@ def _httpx_giveup_codes(e: Exception) -> bool:
     if e.request.method in {"POST", "PUT"}:
         return e.response.status_code not in {429}
     return False
+
+
+def _remove_unset_keys(obj):
+    """Recursively removes items or key-value pairs that are UNSET."""
+    if isinstance(obj, dict):
+        # Create a new dict, skipping keys where the value is UNSET
+        return {k: _remove_unset_keys(v) for k, v in obj.items() if v is not UNSET}
+    elif isinstance(obj, list):
+        # Create a new list, filtering out any UNSET items
+        return [_remove_unset_keys(i) for i in obj if i is not UNSET]
+    else:
+        return obj
 
 
 class SlingshotClient:
@@ -74,7 +86,11 @@ class SlingshotClient:
         giveup=_httpx_giveup_codes,
     )
     def _api_request(
-        self, method: Literal["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"], endpoint: str
+        self,
+        method: Literal["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+        endpoint: str,
+        json: Optional[JSON_TYPE] = None,
+        params: Optional[QueryParams] = None,
     ) -> JSON_TYPE:
         """Make an API request to the Slingshot API."""
         headers = {
@@ -82,7 +98,10 @@ class SlingshotClient:
             "User-Agent": USER_AGENT,
         }
         url = f"{self._api_url}{endpoint}"
-        response = httpx.request(method=method, url=url, headers=headers)
+        # Removes all the UNSET values from the json
+
+        json = _remove_unset_keys(json)
+        response = httpx.request(method=method, url=url, headers=headers, json=json, params=params)
         response.raise_for_status()
         return response.json()
 
