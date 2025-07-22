@@ -43,10 +43,6 @@ version_scheme = "pep440"
 version_provider = "uv"
 changelog_file = "docs/changelog.md"
 update_changelog_on_bump = true
-[project.urls]
-Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
-
-
 [tool.ruff]
 exclude = ["artifacts/*"]
 line-length = 100
@@ -86,6 +82,10 @@ pythonVersion = "3.9"
 reportUnnecessaryTypeIgnoreComment = "error"
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = true
+
+[project.urls]
+Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
+
 
 [dependency-groups]
 dev = [
