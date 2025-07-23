@@ -3,6 +3,19 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
+## v0.3.0 (2025-07-23)
+
+### Feat
+
+- fix version bump (#18)
+
+### Fix
+
+- build docs in ci workflow (#24)
+- prune changelog and versions (#22)
+- dont use actions to create the release (#21)
+- tag release creation (#19)
+
 ## v0.1.0 (2025-07-22)
 
 ### Feat
