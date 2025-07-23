@@ -3,6 +3,12 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
+## v0.2.1 (2025-07-23)
+
+### Fix
+
+- tag release creation (#19)
+
 ## v0.2.0 (2025-07-23)
 
 ### Fix
