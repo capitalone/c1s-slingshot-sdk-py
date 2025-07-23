@@ -3,34 +3,13 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
-## v0.2.1 (2025-07-23)
-
-### Fix
-
-- tag release creation (#19)
-
-## v0.2.0 (2025-07-23)
-
-### Fix
-
-- tag release creation (#19)
-
-## v0.2.0 (2025-07-23)
-
-### Feat
-
-- fix version bump (#18)
-
 ## v0.1.0 (2025-07-22)
 
 ### Feat
 
 - Add component testing (#15)
 - Added core api wrappers around project and recommendation endpoints (#10)
-- add sphinx docs (#4)
-- create gh release on tag
-- used trusted publish option for pypi
-- changelog and release management
-
-## v0.0.1a0 (2025-07-10)
-- Initial Version
+- Add sphinx docs (#4)
+- Create gh release on tag
+- Use trusted publish option for pypi
+- Changelog and release management
