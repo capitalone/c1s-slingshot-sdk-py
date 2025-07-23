@@ -35,6 +35,9 @@ resolution = "lowest"
 [tool.hatch.build.targets.wheel]
 packages = ["src/slingshot"]
 
+[tool.hatch.build.targets.sdist]
+packages = ["src/slingshot"]
+
 
 [tool.commitizen]
 name = "cz_conventional_commits"
@@ -43,9 +46,7 @@ version_scheme = "pep440"
 version_provider = "uv"
 changelog_file = "docs/changelog.md"
 update_changelog_on_bump = true
-version_files = [
-    "pyproject.toml:version"
-]
+version_files = ["pyproject.toml:version"]
 
 [tool.ruff]
 exclude = ["artifacts/*"]
@@ -99,11 +100,11 @@ dev = [
     "pytest>=8.3.5",
     "ruff>=0.12.4",
     # Pin dev-only transitive dependencies
-    "colorama>=0.4.0", # pytest
-    "iniconfig>=1.1.0", # pytest
-    "packaging>=21.0", # pytest
-    "pyparsing>=2.4.0", # pytest
-    "identify>=2.0.0", # pre-commit
+    "colorama>=0.4.0",      # pytest
+    "iniconfig>=1.1.0",     # pytest
+    "packaging>=21.0",      # pytest
+    "pyparsing>=2.4.0",     # pytest
+    "identify>=2.0.0",      # pre-commit
     "pytest-httpx>=0.35.0",
     "commitizen>=4.8.3",
 ]
@@ -114,8 +115,8 @@ docs = [
     "sphinx-autodoc-typehints>=2.3.0",
     "sphinx-autobuild>=2024.10.3",
     "linkify-it-py>=2.0.0",
-    "beautifulsoup4>=4.13.4", # furo
-    "wcwidth>=0.2.13", # sphinx
-    "sphinxcontrib-qthelp>=1.0.0", # sphinx
-    "sphinxcontrib-devhelp>=1.0.0" ,# sphinx
+    "beautifulsoup4>=4.13.4",          # furo
+    "wcwidth>=0.2.13",                 # sphinx
+    "sphinxcontrib-qthelp>=1.0.0",     # sphinx
+    "sphinxcontrib-devhelp>=1.0.0",    # sphinx
 ]
