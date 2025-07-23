@@ -27,7 +27,7 @@ description = "Slingshot SDK"
 name = "c1s-slingshot-sdk-py"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
-version = "0.2.1"
+version = "0.3.0"
 
 [tool.uv]
 resolution = "lowest"
