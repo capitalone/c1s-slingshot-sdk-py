@@ -51,15 +51,6 @@ jobs:
       - name: Publish to PyPI
         run: uv publish
 
-      - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-        run: |
-          gh release create "$tag" \
-            --title "$tag" \
-            --latest \
-            --generate-notes
   deploy-docs:
     environment:
       name: github-pages
