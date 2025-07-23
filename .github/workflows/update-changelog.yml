@@ -1,4 +1,4 @@
-name: Update Changelog
+name: update-changelog
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
           body: |
             This pull request bumps the version to ${{ steps.bump-version.outputs.BUMP_OUTPUT }} and updates the changelog.
           base: main
-          head: release-${{ steps.bump-version.outputs.BUMP_OUTPUT }}
+          branch: release-${{ steps.bump-version.outputs.BUMP_OUTPUT }}
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |
             release: ${{ steps.bump-version.outputs.BUMP_OUTPUT }}
