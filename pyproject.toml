@@ -94,10 +94,6 @@ reportUnnecessaryTypeIgnoreComment = "error"
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = true
 
-[project.urls]
-Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
-
-
 [dependency-groups]
 dev = [
     "gitlint>=0.19.1",
