@@ -1,9 +1,19 @@
-name: Release to PyPI
+name: release
 
 on:
   push:
     tags:
       - v*
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "deploy"
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -16,22 +26,27 @@ jobs:
           fetch-depth: 0
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
         with:
           version: "latest"
 
       - name: Build package
         run: uv build
+      - name: Build documentation
+        run: |
+          uv run --group docs sphinx-build -b html docs docs/_build/html -W --keep-going
+      - name: Upload Pages artifact
+        id: upload
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_build/html
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        env:
+          name: github-pages
+          url: ${{ steps.upload.outputs.page_url }}
 
       - name: Publish to PyPI
         run: uv publish
-
-      - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-        run: |
-          gh release create "$tag" \
-            --title "$tag" \
-            --latest \
-            --generate-notes

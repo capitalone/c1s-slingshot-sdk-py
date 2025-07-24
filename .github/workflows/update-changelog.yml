@@ -1,4 +1,4 @@
-name: Update Changelog
+name: update-changelog
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
         with:
           version: "latest"
       - name: Commitzen next-version (dry-run)
@@ -26,13 +26,13 @@ jobs:
           echo "BUMP_OUTPUT=$OUTPUT" >> $GITHUB_OUTPUT
           uv run cz bump --yes --files-only
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
           title: "Release ${{ steps.bump-version.outputs.BUMP_OUTPUT }}"
           body: |
             This pull request bumps the version to ${{ steps.bump-version.outputs.BUMP_OUTPUT }} and updates the changelog.
           base: main
-          head: release-${{ steps.bump-version.outputs.BUMP_OUTPUT }}
+          branch: release-${{ steps.bump-version.outputs.BUMP_OUTPUT }}
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |
             release: ${{ steps.bump-version.outputs.BUMP_OUTPUT }}
