@@ -27,6 +27,8 @@ description = "Slingshot SDK"
 name = "c1s-slingshot-sdk-py"
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 version = "0.3.0"
 
 [tool.uv]
@@ -47,6 +49,10 @@ version_provider = "uv"
 changelog_file = "docs/changelog.md"
 update_changelog_on_bump = true
 version_files = ["pyproject.toml:version"]
+
+[project.urls]
+Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
+Changelog = "https://github.com/capitalone/c1-slingshot-sdk-py/blob/main/CHANGELOG.md"
 
 [tool.ruff]
 exclude = ["artifacts/*"]
@@ -87,10 +93,6 @@ pythonVersion = "3.9"
 reportUnnecessaryTypeIgnoreComment = "error"
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = true
-
-[project.urls]
-Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
-
 
 [dependency-groups]
 dev = [
