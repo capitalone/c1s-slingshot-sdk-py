@@ -3,6 +3,13 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
+## v0.4.0 (2025-07-24)
+
+### Feat
+
+- switch to apache 2.0 license (#7)
+- better packaging (#26)
+
 ## v0.3.0 (2025-07-23)
 
 ### Feat
