@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         run: |
-          uv run --resolution=${{ matrix.resolution }} --python=${{ matrix.python-version }} pytest tests/ -v
+          uv run --frozen --resolution=${{ matrix.resolution }} --python=${{ matrix.python-version }} pytest tests/ -v
 
   build-docs:
     runs-on: ubuntu-latest

@@ -70,7 +70,7 @@ test:
 		for version in $(PYTHON_VERSIONS); do \
 			for resolution in lowest highest; do \
 				echo "🐍 Testing Python $$version with $$resolution resolution..."; \
-				uv run --isolated --resolution=$$resolution --python=$$version pytest tests/ -v || exit 1; \
+				uv run --isolated --frozen --resolution=$$resolution --python=$$version pytest tests/ -v || exit 1; \
 			done; \
 		done; \
 	else \
@@ -79,12 +79,12 @@ test:
 		RESOLUTION="$$2"; \
 		if [ -n "$$VERSION" ] && [ -n "$$RESOLUTION" ]; then \
 			echo "🧪 Running tests for Python $$VERSION with $$RESOLUTION resolution..."; \
-			uv run --isolated --resolution=$$RESOLUTION --python=$$VERSION pytest tests/ -v; \
+			uv run --isolated --frozen --resolution=$$RESOLUTION --python=$$VERSION pytest tests/ -v; \
 		elif [ -n "$$VERSION" ]; then \
 			echo "🧪 Running tests for Python $$VERSION with both resolutions..."; \
 			for resolution in lowest highest; do \
 				echo "🐍 Testing Python $$VERSION with $$resolution resolution..."; \
-				uv run --isolated --resolution=$$resolution --python=$$VERSION pytest tests/ -v || exit 1; \
+				uv run --isolated --frozen --resolution=$$resolution --python=$$VERSION pytest tests/ -v || exit 1; \
 			done; \
 		else \
 			echo "❌ Invalid arguments. Usage: make test [VERSION] [RESOLUTION]"; \
