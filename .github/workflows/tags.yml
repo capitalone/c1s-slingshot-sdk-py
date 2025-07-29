@@ -16,8 +16,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
+  release-pypi:
     runs-on: ubuntu-latest
+    environment: pypi
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,11 +28,22 @@ jobs:
 
       - name: Set up uv
         uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
-        with:
-          version: "latest"
-
       - name: Build package
         run: uv build
+      - name: Publish to PyPI
+        run: uv publish
+  release-docs:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history for proper version detection
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
       - name: Build documentation
         run: |
           uv run --group docs sphinx-build -b html docs docs/_build/html -W --keep-going
@@ -47,6 +59,3 @@ jobs:
         env:
           name: github-pages
           url: ${{ steps.upload.outputs.page_url }}
-
-      - name: Publish to PyPI
-        run: uv publish
