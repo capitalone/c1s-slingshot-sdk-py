@@ -31,6 +31,9 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 version = "0.4.0"
 
+[tool.pytest.ini_options]
+addopts = "--cov=slingshot --cov-fail-under=90"
+
 [tool.uv]
 resolution = "lowest"
 
@@ -102,13 +105,14 @@ dev = [
     "pytest>=8.3.5",
     "ruff>=0.12.4",
     # Pin dev-only transitive dependencies
-    "colorama>=0.4.0",      # pytest
-    "iniconfig>=1.1.0",     # pytest
-    "packaging>=21.0",      # pytest
-    "pyparsing>=2.4.0",     # pytest
-    "identify>=2.0.0",      # pre-commit
+    "colorama>=0.4.0", # pytest
+    "iniconfig>=1.1.0", # pytest
+    "packaging>=21.0", # pytest
+    "pyparsing>=2.4.0", # pytest
+    "identify>=2.0.0", # pre-commit
     "pytest-httpx>=0.35.0",
     "commitizen>=4.8.3",
+    "pytest-cov>=6",
 ]
 docs = [
     "sphinx>=7.0.0",
