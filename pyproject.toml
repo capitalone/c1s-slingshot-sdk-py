@@ -6,35 +6,6 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "slingshot"
 
-[project]
-authors = [{ "name" = "Capital One Software" }]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: System Administrators",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python",
-]
-dependencies = [
-    "backoff>=2.2.1",
-    "httpx>=0.23",
-    # Pin critical transitive dependencies to ensure compatibility
-    "certifi>=2021.10.8", # httpx
-    "idna>=2.8",          # httpx
-    "sniffio>=1.2.0",     # httpx
-    "anyio>=2.0.0",       # httpx
-]
-description = "Slingshot SDK"
-name = "c1s-slingshot-sdk-py"
-readme = "README.md"
-requires-python = ">=3.9,<3.14"
-license = "Apache-2.0"
-license-files = ["LICENSE", "NOTICE"]
-version = "0.4.0"
-
 [tool.pytest.ini_options]
 addopts = "--cov=slingshot --cov-fail-under=90"
 
@@ -90,6 +61,35 @@ pythonVersion = "3.9"
 reportUnnecessaryTypeIgnoreComment = "error"
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = true
+
+[project]
+authors = [{ "name" = "Capital One Software" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python",
+]
+dependencies = [
+    "backoff>=2.2.1",
+    "httpx>=0.23",
+    # Pin critical transitive dependencies to ensure compatibility
+    "certifi>=2021.10.8", # httpx
+    "idna>=2.8",          # httpx
+    "sniffio>=1.2.0",     # httpx
+    "anyio>=2.0.0",       # httpx
+]
+description = "Slingshot SDK"
+name = "c1s-slingshot-sdk-py"
+readme = "README.md"
+requires-python = ">=3.9,<3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+version = "0.5.0"
 
 [project.urls]
 Home = "https://github.com/capitalone/c1-slingshot-sdk-py"

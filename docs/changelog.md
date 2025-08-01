@@ -3,6 +3,16 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
+## v0.5.0 (2025-08-01)
+
+### Feat
+
+- update readme and contribution guide (#28)
+
+### Fix
+
+- wheel package target (#33)
+
 ## v0.4.0 (2025-07-24)
 
 ### Feat
