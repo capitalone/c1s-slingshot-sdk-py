@@ -18,7 +18,9 @@ concurrency:
 jobs:
   release-pypi:
     runs-on: ubuntu-latest
-    environment: pypi
+    environment:
+      name: pypi
+      url: https://pypi.org/project/c1s-slingshot-sdk-py/
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,9 +34,8 @@ jobs:
         run: uv build
       - name: Publish to PyPI
         run: uv publish
-  release-docs:
+  build-docs:
     runs-on: ubuntu-latest
-    environment: github-pages
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,9 +54,13 @@ jobs:
         with:
           path: docs/_build/html
 
+  release-docs:
+    needs: build-docs
+    runs-on: ubuntu-latest
+    environment:
+          name: github-pages
+          url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        env:
-          name: github-pages
-          url: ${{ steps.upload.outputs.page_url }}
