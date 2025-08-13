@@ -3,6 +3,12 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
+## v0.5.1 (2025-08-13)
+
+### Fix
+
+- fix docs deployment url (#34)
+
 ## v0.5.0 (2025-08-01)
 
 ### Feat
