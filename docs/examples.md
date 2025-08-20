@@ -163,7 +163,7 @@ from dataclasses import dataclass
 class SlingshotConfig:
     """Configuration class for Slingshot client."""
     api_key: Optional[str] = None
-    api_url: str = "https://slingshot.capitalone.com/api"
+    api_url: str = "https://slingshot.capitalone.com/prod/api/gradient"
     timeout: int = 30
     retries: int = 3
 
@@ -275,7 +275,7 @@ from typing import List, Dict, Any
 class AsyncSlingshotClient:
     """Example async wrapper for Slingshot operations."""
 
-    def __init__(self, api_key: str, api_url: str = "https://slingshot.capitalone.com/api"):
+    def __init__(self, api_key: str, api_url: str = "https://slingshot.capitalone.com/prod/api/gradient"):
         self.api_key = api_key
         self.api_url = api_url
         self.headers = {

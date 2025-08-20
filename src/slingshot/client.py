@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 USER_AGENT = f"Slingshot Library/{__version__} (c1s-slingshot-sdk-py)"
-DEFAULT_API_URL = "https://slingshot.capitalone.com/api"
+DEFAULT_API_URL = "https://slingshot.capitalone.com/prod/api/gradient"
 
 logger = logging.getLogger(__name__)
 
