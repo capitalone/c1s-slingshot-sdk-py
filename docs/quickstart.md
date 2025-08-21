@@ -50,7 +50,7 @@ from slingshot import SlingshotClient
 client = SlingshotClient()
 
 # List all projects
-projects = client.projects.list()
+projects = client.projects.get_projects()
 print(f"Found {len(projects)} projects")
 
 # Get a specific project
@@ -82,19 +82,6 @@ except SlingshotAPIError as e:
     print(f"API error: {e.message}")
 except Exception as e:
     print(f"Unexpected error: {e}")
-```
-
-## Custom Configuration
-
-You can customize the client behavior:
-
-```python
-from slingshot import SlingshotClient
-
-client = SlingshotClient(
-    api_key="your-api-key",
-    api_url="https://custom-slingshot-instance.com/api"  # Custom API endpoint
-)
 ```
 
 ## Next Steps
