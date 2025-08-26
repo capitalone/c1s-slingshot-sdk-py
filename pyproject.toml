@@ -102,6 +102,7 @@ dev = [
     "pyright>=1.1.402",
     "pytest>=8.3.5",
     "ruff>=0.12.4",
+    "typing-extensions>=4.1.0",
     # Pin dev-only transitive dependencies
     "colorama>=0.4.0", # pytest
     "iniconfig>=1.1.0", # pytest
