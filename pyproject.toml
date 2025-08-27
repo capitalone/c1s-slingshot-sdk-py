@@ -112,6 +112,7 @@ dev = [
     "pytest-httpx>=0.35.0",
     "commitizen>=4.8.3",
     "pytest-cov>=6",
+    "setuptools>=65.0.0",
 ]
 docs = [
     "sphinx>=7.0.0",

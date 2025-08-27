@@ -37,11 +37,14 @@ This single command will:
 If you prefer to run setup steps individually:
 
 ```bash
+make clean           # Cleans up environment if procedure has already run
+make install-python  # Install pyenv and necessary python versions if not found
 make install-uv      # Install uv package manager if not found
 make setup-venv      # Create virtual environment with uv
 make sync            # Sync dependencies with uv
-make test            # Run tests across all Python versions
 make install-precommit # Install pre-commit hooks
+make test            # Run tests across all Python versions
+
 ```
 
 ### Available Commands
