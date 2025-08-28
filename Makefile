@@ -8,6 +8,7 @@ help:
 	@echo "Available targets:"
 	@echo "  bootstrap      - Full project setup (install uv, setup venv, sync deps, install pre-commit, run tests)"
 	@echo "  install-uv     - Install uv if not found"
+	@echo "  install-python  - Install required Python versions using pyenv"
 	@echo "  setup-venv     - Create virtual environment with uv"
 	@echo "  sync           - Sync dependencies with uv"
 	@echo "  test [VERSION] [RESOLUTION] - Run tests (e.g., 'make test', 'make test 3.9', 'make test 3.9 lowest')"
@@ -19,7 +20,13 @@ help:
 	@echo "  clean          - Clean up build artifacts and cache"
 
 # Bootstrap everything
-bootstrap: install-uv setup-venv sync
+bootstrap:
+	make clean
+	make install-python
+	make install-uv
+	make setup-venv
+	make sync
+	make install-precommit
 	@echo "✅ Project bootstrap completed successfully!"
 
 # Install uv if not found
@@ -46,7 +53,6 @@ install-python:
 	@for version in $(PYTHON_VERSIONS); do \
 		echo "🐍 Installing Python $$version..."; \
 		pyenv install -s $$version; \
-		pyenv local $$version; \
 		echo "✅ Python $$version installed successfully"; \
 	done;
 
