@@ -22,15 +22,6 @@ These are the data types returned by the API methods that match the Slingshot AP
    :show-inheritance:
 ```
 
-## Exceptions
-
-```{eval-rst}
-.. automodule:: slingshot.exceptions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-```
-
 ## API Modules
 
 ### Projects API

@@ -66,22 +66,38 @@ new_project = client.projects.create({
 
 ## Error Handling
 
-The SDK provides comprehensive error handling:
+Slingshot SDK executes the `raise_for_status()` for all Slingshot API requests
+which will raise an HTTPStatusError in the case of non-successful requests.
+Example response handling may look like the following:
+
 
 ```python
 from slingshot import SlingshotClient
-from slingshot.exceptions import SlingshotAPIError, SlingshotAuthenticationError
+import logging
+from httpx import HTTPStatusError
 
-client = SlingshotClient()
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-try:
-    project = client.projects.get("invalid-id")
-except SlingshotAuthenticationError:
-    print("Authentication failed - check your API key")
-except SlingshotAPIError as e:
-    print(f"API error: {e.message}")
-except Exception as e:
-    print(f"Unexpected error: {e}")
+def main():
+    client = SlingshotClient()
+
+    try:
+        project = client.projects.get(project_id)
+        logger.info(f"Successfully fetched project: {project['name']}")
+        return project
+
+    except HTTPStatusError as e:
+        logger.error(f"API error when fetching project {project_id}: {e.message}")
+        return None
+
+    except Exception as e:
+        logger.error(f"Unexpected error fetching Slingshot project: {str(e)}")
+        return None
+
+if __name__ == "__main__":
+    main()
 ```
 
 ## Next Steps

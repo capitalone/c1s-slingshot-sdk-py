@@ -194,7 +194,6 @@ The documentation source files are in the `docs/` directory and include:
 ├── src/slingshot/          # Main SDK source code
 │   ├── __init__.py         # Package initialization
 │   ├── client.py           # Main client class
-│   ├── exceptions.py       # Custom exceptions
 │   ├── types.py           # Type definitions
 │   └── api/               # API endpoint implementations
 ├── tests/                 # Test suite

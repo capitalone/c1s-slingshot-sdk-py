@@ -19,7 +19,6 @@ The Capital One Slingshot SDK provides a Python interface for interacting with t
 ## Features
 
 - **Simple API Client**: Easy-to-use client for making authenticated requests
-- **Error Handling**: Comprehensive exception handling with meaningful error messages
 - **Retry Logic**: Built-in retry mechanisms for resilient API interactions
 
 ## Installation

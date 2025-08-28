@@ -40,22 +40,18 @@ if __name__ == "__main__":
 
 ### Error Handling Example
 
+Slingshot SDK executes the `raise_for_status()` for all Slingshot API requests
+which will raise an HTTPStatusError in the case of non-successful API requests.
+Example response handling may look like the following:
+
 ```python
 from slingshot import SlingshotClient
-from slingshot.exceptions import (
-    SlingshotAPIError,
-    SlingshotAuthenticationError,
-    SlingshotNotFoundError
-)
 import logging
+from httpx import HTTPStatusError
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-def robust_project_fetch(client: SlingshotClient, project_id: str):
-    """Fetch a project with comprehensive error handling."""
-
 
 def main():
     client = SlingshotClient()
@@ -65,20 +61,12 @@ def main():
         logger.info(f"Successfully fetched project: {project['name']}")
         return project
 
-    except SlingshotAuthenticationError:
-        logger.error("Authentication failed. Please check your API key.")
-        return None
-
-    except SlingshotNotFoundError:
-        logger.warning(f"Project with ID {project_id} not found.")
-        return None
-
-    except SlingshotAPIError as e:
-        logger.error(f"API error occurred: {e.message}")
+    except HTTPStatusError as e:
+        logger.error(f"API error when fetching project {project_id}: {e.message}")
         return None
 
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
+        logger.error(f"Unexpected error fetching Slingshot project: {str(e)}")
         return None
 
 if __name__ == "__main__":
