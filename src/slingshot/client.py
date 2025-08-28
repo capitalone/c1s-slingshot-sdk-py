@@ -1,6 +1,7 @@
 import logging
 import os
 from functools import cached_property
+from json.decoder import JSONDecodeError
 from typing import TYPE_CHECKING, Literal, Optional
 
 import backoff
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 
 
 USER_AGENT = f"Slingshot Library/{__version__} (c1s-slingshot-sdk-py)"
-DEFAULT_API_URL = "https://slingshot.capitalone.com/api"
+DEFAULT_API_URL = "https://slingshot.capitalone.com/prod/api/gradient/v1"
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +104,13 @@ class SlingshotClient:
         json = _remove_unset_keys(json)
         response = httpx.request(method=method, url=url, headers=headers, json=json, params=params)
         response.raise_for_status()
-        return response.json()
+
+        try:
+            return response.json()
+        except JSONDecodeError:
+            return str(response.status_code)
+        except Exception as exc:
+            raise RuntimeError("Unhandled api response") from exc
 
     @cached_property
     def projects(self) -> "ProjectAPI":
