@@ -95,15 +95,19 @@ def test_no_api_key_raises_error() -> None:
 
 
 @pytest.mark.parametrize("status_code", [200])
-def test_nonserializable_response(
+def test_reponse_non_json_content_type(
     httpx_mock: HTTPXMock, client: SlingshotClient, status_code: int
 ) -> None:
-    """Test retries on acceptable status code for POST and PUT."""
+    """Test response coming back without json content type."""
     httpx_mock.add_response(
         method="GET",
         url=f"{client._api_url}/TEST",
         status_code=status_code,
     )
 
-    result = client._api_request(method="GET", endpoint="/TEST")
-    assert result == "200"
+    with pytest.raises(RuntimeError) as exc_info:
+        client._api_request(method="GET", endpoint="/TEST")
+
+    assert (
+        str(exc_info.value) == "Unhandled API response: response was not of type 'application/json'"
+    )
