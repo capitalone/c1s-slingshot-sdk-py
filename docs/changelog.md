@@ -3,6 +3,21 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
+## v0.6.0 (2025-09-02)
+
+### Feat
+
+- Add workflow_dispatch for manual Github Action runs (#43)
+
+### Fix
+
+- Correct nesting of workflow_dispatch event (#45)
+- throw exception on response is not json decodeable (#41)
+- client handling and delete unused exception. (#38)
+- Add missing dependency (#37)
+- fixup documention errors (#36)
+- fix docs deployment url (#34)
+
 ## v0.5.1 (2025-08-29)
 
 ### Fix
