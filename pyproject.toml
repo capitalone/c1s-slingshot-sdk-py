@@ -106,9 +106,12 @@ dev = [
     "ruff>=0.12.4",
     "typing-extensions>=4.1.0",
     # Pin dev-only transitive dependencies
+    "requests>=2.32.0,<3.0", # prance
     "ruamel.yaml>=0.17.21", # prance
     "ruamel.yaml.clib>0.2.7", # prance
     "jsonschema>=4.19.0", # prance + openapi-spec-validator
+    "charset-normalizer>=3.2,<4.0", # requests
+    "urllib3>=2.0,<3.0", # requests
     "referencing>=0.30.0", # jsonschema
     "rpds-py>=0.13.0", # jsonschema
     "attrs>=21.3.0", # jsonschema
