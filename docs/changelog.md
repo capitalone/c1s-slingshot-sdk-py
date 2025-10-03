@@ -3,6 +3,12 @@
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
 
+## v0.6.1 (2025-10-03)
+
+### Fix
+
+- Correct project.urls (#46)
+
 ## v0.6.0 (2025-09-02)
 
 ### Feat
