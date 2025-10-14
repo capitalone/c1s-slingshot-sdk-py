@@ -1,6 +1,9 @@
 # Makefile for Slingshot SDK Python project
 PYTHON_VERSIONS := 3.9 3.10 3.11 3.12 3.13
 
+SPEC_FILE := docs/openapi.yaml
+BUNDLED_FILE := docs/openapi-bundled.yaml
+
 .PHONY: help bootstrap install-uv setup-venv sync test check install-precommit clean docs docs-serve docs-clean
 
 # Default target
@@ -55,6 +58,16 @@ install-python:
 		pyenv install -s $$version; \
 		echo "✅ Python $$version installed successfully"; \
 	done;
+
+# Parses + resolves $refs + checks OpenAPI compliance
+openapi-validate:
+	@echo "🔍 Validating $(SPEC_FILE)"
+	@uv run python scripts/validate_openapi.py $(SPEC_FILE)
+
+# Fully dereference the spec and write a single-file bundled spec
+openapi-bundle:
+	@echo "🔗 Bundling $(SPEC_FILE) into $(BUNDLED_FILE)"
+	@uv run python scripts/bundle_openapi.py $(SPEC_FILE) $(BUNDLED_FILE)
 
 # Create virtual environment
 setup-venv:
