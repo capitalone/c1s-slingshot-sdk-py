@@ -92,23 +92,34 @@ license-files = ["LICENSE", "NOTICE"]
 version = "0.6.1"
 
 [project.urls]
-Home = "https://github.com/capitalone/c1s-slingshot-sdk-py"
-Changelog = "https://github.com/capitalone/c1s-slingshot-sdk-py/blob/main/docs/changelog.md"
+Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
+Changelog = "https://github.com/capitalone/c1-slingshot-sdk-py/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 dev = [
     "gitlint>=0.19.1",
+    "openapi-spec-validator>=0.7.2",
+    "prance>=23.6.21.0",
     "pre-commit>=4.2.0",
     "pyright>=1.1.402",
     "pytest>=8.3.5",
     "ruff>=0.12.4",
     "typing-extensions>=4.1.0",
     # Pin dev-only transitive dependencies
+    "requests>=2.32.0,<3.0", # prance
+    "ruamel.yaml>=0.17.21", # prance
+    "ruamel.yaml.clib>0.2.7", # prance
+    "jsonschema>=4.19.0", # prance + openapi-spec-validator
+    "charset-normalizer>=3.2,<4.0", # requests
+    "urllib3>=2.0,<3.0", # requests
+    "referencing>=0.30.0", # jsonschema
+    "rpds-py>=0.13.0", # jsonschema
+    "attrs>=21.3.0", # jsonschema
+    "identify>=2.0.0", # pre-commit
     "colorama>=0.4.0", # pytest
     "iniconfig>=1.1.0", # pytest
     "packaging>=21.0", # pytest
     "pyparsing>=2.4.0", # pytest
-    "identify>=2.0.0", # pre-commit
     "pytest-httpx>=0.35.0",
     "commitizen>=4.8.3",
     "pytest-cov>=6",

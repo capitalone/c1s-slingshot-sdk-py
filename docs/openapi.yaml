@@ -1,0 +1,326 @@
+openapi: 3.0.3
+info:
+  title: Capital One Slingshot API
+  version: 1.0.0
+  description: |
+    The Slingshot public API documentation for the Python SDK. This API allows
+    users to manage projects, generate recommendations, and access utility endpoints.
+
+servers:
+  - url: https://slingshot.capitalone.com/prod/api/gradient/v1
+    description: Production Environment
+
+tags:
+  - name: Projects
+    description: Manage projects, including creation, updates, and deletion.
+  - name: Recommendations
+    description: Generate and fetch project recommendations.
+  - name: Utility
+    description: Health and utility endpoints.
+
+# Default security for all endpoints
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /health:
+    get:
+      tags: [Utility]
+      summary: Check service health
+      operationId: checkServiceHealth
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List all projects
+      operationId: listAllProjects
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: A paginated list of projects.
+          headers:
+            X-Total-Count:
+              description: Total number of projects across all pages.
+              schema: { type: integer, minimum: 0 }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPage'
+              examples:
+                sample:
+                  value:
+                    page: 1
+                    size: 2
+                    total: 42
+                    items:
+                      - id: "proj_123"
+                        name: "Fraud Scoring"
+                        description: "Detect anomalous transactions"
+                        created_at: "2024-05-10T12:30:00Z"
+                        updated_at: "2024-06-01T09:00:00Z"
+                      - id: "proj_124"
+                        name: "Churn Model"
+                        description: "Predict churn propensity"
+                        created_at: "2024-05-11T08:00:00Z"
+                        updated_at: "2024-06-02T10:15:00Z"
+    post:
+      tags: [Projects]
+      summary: Create a new project
+      operationId: createNewProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProjectCreate' }
+            examples:
+              sample:
+                value:
+                  name: "Pricing Optimization"
+                  product_code: "PRC"
+                  description: "Optimize price points for conversions"
+      responses:
+        '201':
+          description: Project created successfully.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Project' }
+              examples:
+                sample:
+                  value:
+                    id: "proj_125"
+                    name: "Pricing Optimization"
+                    description: "Optimize price points for conversions"
+                    created_at: "2024-07-01T10:00:00Z"
+                    updated_at: "2024-07-01T10:00:00Z"
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/UnprocessableEntity' }
+
+  /projects/{project_id}:
+    get:
+      tags: [Projects]
+      summary: Retrieve a specific project
+      operationId: getProjectById
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project details.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Project' }
+              examples:
+                sample:
+                  value:
+                    id: "proj_123"
+                    name: "Fraud Scoring"
+                    description: "Detect anomalous transactions"
+                    created_at: "2024-05-10T12:30:00Z"
+                    updated_at: "2024-06-01T09:00:00Z"
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Projects]
+      summary: Update a project
+      operationId: updateProjectById
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProjectUpdate' }
+            examples:
+              sample:
+                value:
+                  description: "Updated project description"
+      responses:
+        '200':
+          description: Project updated successfully.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Project' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /projects/{project_id}/recommendations:
+    post:
+      tags: [Recommendations]
+      summary: Create a recommendation for a project
+      operationId: createRecommendationForProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationCreate'
+            examples:
+              sample:
+                value:
+                  strategy: "cost_savings"
+                  parameters:
+                    threshold: 0.8
+      responses:
+        '201':
+          description: Recommendation created successfully.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Recommendation' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+
+  parameters:
+    ProjectId:
+      in: path
+      name: project_id
+      required: true
+      schema: { type: string }
+      description: Unique identifier for the project.
+    Page:
+      in: query
+      name: page
+      schema: { type: integer, minimum: 1, default: 1 }
+      description: 1-based page index.
+    Size:
+      in: query
+      name: size
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+      description: Page size.
+    Sort:
+      in: query
+      name: sort
+      schema: { type: string, example: "created_at:desc" }
+      description: Optional sort (field:direction).
+
+  responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Unauthorized access.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Conflict with existing resource.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    UnprocessableEntity:
+      description: Validation error.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ValidationError' }
+
+  schemas:
+    Project:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    ProjectCreate:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+        product_code: { type: string, nullable: true }
+        description: { type: string, nullable: true }
+
+    ProjectUpdate:
+      type: object
+      description: Partial update; fields optional.
+      properties:
+        name: { type: string }
+        description: { type: string, nullable: true }
+
+    ProjectPage:
+      type: object
+      required: [page, size, total, items]
+      properties:
+        page: { type: integer }
+        size: { type: integer }
+        total: { type: integer }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Project' }
+
+    RecommendationCreate:
+      type: object
+      properties:
+        strategy:
+          type: string
+          description: Recommendation strategy identifier.
+          example: cost_savings
+        parameters:
+          type: object
+          additionalProperties: true
+          description: Strategy-specific parameters.
+
+    Recommendation:
+      type: object
+      description: Recommendation details.
+      properties:
+        id: { type: string, example: "rec_abc123" }
+        project_id: { type: string, example: "proj_123" }
+        created_at: { type: string, format: date-time }
+        state:
+          type: string
+          enum: [pending, running, complete, failed]
+        summary:
+          type: string
+          example: "Reduce instance size by one tier during off-peak hours."
+        details:
+          type: object
+          additionalProperties: true
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string, example: "invalid_argument" }
+        message: { type: string, example: "Invalid page size." }
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string, example: "size" }
+              issue: { type: string, example: "must be <= 200" }
+
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
