@@ -9,7 +9,7 @@ info:
 
     '
 servers:
-- url: https://slingshot.capitalone.com/prod/api/gradient/v1
+- url: https://slingshot.capitalone.com/prod/api/gradient
   description: Production Environment
 tags:
 - name: Projects
