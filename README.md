@@ -1,6 +1,6 @@
 # Capital One Slingshot SDK Python Library
 
-![Capital One Slingshot Logo](docs/_static/slingshot-small-logo.png)
+![Capital One Slingshot Logo](https://raw.githubusercontent.com/capitalone/c1s-slingshot-sdk-py/main/docs/_static/slingshot-small-logo.png)
 
 The official Python SDK for Capital One's Slingshot platform. This library provides a convenient way to interact with the Slingshot API from your Python applications.
 
@@ -12,9 +12,13 @@ For comprehensive guides, examples, and API documentation, visit our GitHub Page
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Contributing](#contributing)
+- [Capital One Slingshot SDK Python Library](#capital-one-slingshot-sdk-python-library)
+  - [📚 Documentation](#-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Installation
 
