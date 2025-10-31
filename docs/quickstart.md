@@ -50,18 +50,19 @@ from slingshot import SlingshotClient
 client = SlingshotClient()
 
 # List all projects
-projects = client.projects.get_projects()
-print(f"Found {len(projects)} projects")
+all_projects = []
+for project in client.projects.iterate_projects(include=[]):
+    all_projects.append(project)
+print(f"Found {len(all_projects)} projects.")
 
 # Get a specific project
-project = client.projects.get("project-id")
+project = client.projects.get_project(project_id="project-id", include=["name"])
 print(f"Project: {project['name']}")
 
 # Create a new project
-new_project = client.projects.create({
-    "name": "My New Project",
-    "app_id": "my-app"
-})
+new_project = client.projects.create(
+    name="My New Project"
+)
 ```
 
 ## Error Handling
@@ -84,7 +85,7 @@ def main():
     client = SlingshotClient()
 
     try:
-        project = client.projects.get(project_id)
+        project = client.projects.get_project(project_id="project-id", include=["name"])
         logger.info(f"Successfully fetched project: {project['name']}")
         return project
 
