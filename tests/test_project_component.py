@@ -258,17 +258,19 @@ mock_project_response: ProjectSchema = {
     "create_args, expected_payload",
     [
         (
-            {"name": "Simple Project"},
-            {"name": "Simple Project"},
+            {"name": "Simple Project", "workspaceId": "12345678901234"},
+            {"name": "Simple Project", "workspaceId": "12345678901234"},
         ),
         (
             {
                 "name": "Complex Project",
+                "workspaceId": "12345678901234",
                 "app_id": "app_123",
                 "description": "A test.",
             },
             {
                 "name": "Complex Project",
+                "workspaceId": "12345678901234",
                 "app_id": "app_123",
                 "description": "A test.",
             },
@@ -276,10 +278,12 @@ mock_project_response: ProjectSchema = {
         (
             {
                 "name": "Project With Settings",
+                "workspaceId": "12345678901234",
                 "settings": {"sla_minutes": 120},
             },
             {
                 "name": "Project With Settings",
+                "workspaceId": "12345678901234",
                 "settings": {"sla_minutes": 120},
             },
         ),

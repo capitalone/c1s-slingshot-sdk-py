@@ -15,6 +15,7 @@ def test_create_success(
     """Test creating a project successfully."""
     project_id = "project_id_123"
     project_name = "project_create"
+    workspace_id = "12345678901234"
     mock_response = {"result": {"id": project_id, "name": project_name}}
     url = httpx.URL(
         url=f"{client._api_url}/v1/projects",
@@ -27,6 +28,7 @@ def test_create_success(
     )
     project = client.projects.create(
         name=project_name,
+        workspaceId=workspace_id,
         settings={"sla_minutes": 5},
         app_id="test",
     )
@@ -42,6 +44,7 @@ def test_create_failure(
 ) -> None:
     """Test creating a project failure."""
     project_name = "project_create"
+    workspace_id = "12345678901234"
     mock_error = {"error": "Project cannot be created"}
     url = httpx.URL(
         url=f"{client._api_url}/v1/projects",
@@ -53,7 +56,7 @@ def test_create_failure(
         json=mock_error,
     )
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
-        client.projects.create(name=project_name)
+        client.projects.create(name=project_name, workspaceId=workspace_id)
     assert exc_info.value.response.status_code == 404
     assert exc_info.value.response.json() == mock_error
 

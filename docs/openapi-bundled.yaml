@@ -125,8 +125,11 @@ paths:
               type: object
               required:
               - name
+              - workspaceId
               properties:
                 name:
+                  type: string
+                workspaceId:
                   type: string
                 description:
                   type: string
@@ -135,6 +138,7 @@ paths:
               sample:
                 value:
                   name: Pricing Optimization
+                  workspaceId: '12345678901234'
                   description: Optimize price points for conversions
       responses:
         '201':
@@ -584,8 +588,11 @@ components:
       type: object
       required:
       - name
+      - workspaceId
       properties:
         name:
+          type: string
+        workspaceId:
           type: string
         description:
           type: string
