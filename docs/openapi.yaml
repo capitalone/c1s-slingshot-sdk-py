@@ -73,7 +73,6 @@ paths:
               sample:
                 value:
                   name: "Pricing Optimization"
-                  product_code: "PRC"
                   description: "Optimize price points for conversions"
       responses:
         '201':
@@ -240,7 +239,6 @@ components:
       required: [name]
       properties:
         name: { type: string }
-        product_code: { type: string, nullable: true }
         description: { type: string, nullable: true }
 
     ProjectUpdate:

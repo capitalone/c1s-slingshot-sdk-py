@@ -45,7 +45,6 @@ class ProjectAPI:
     def create(
         self,
         name: str,
-        product_code: str,
         app_id: Optional[str] = UNSET,
         cluster_path: Optional[str] = UNSET,
         job_id: Optional[str] = UNSET,
@@ -61,7 +60,6 @@ class ProjectAPI:
 
         Args:
             name (str): The name of the project.
-            product_code (str): The product code associated with the project.
             settings (ProjectAdditionalSettingsSchema): A object for
             additional settings.
             app_id (Optional[str], optional): The application ID.
@@ -81,10 +79,7 @@ class ProjectAPI:
             ProjectSchema: The details of the newly created project.
 
         """
-        json: JSON_TYPE = {
-            "name": name,
-            "product_code": product_code,
-        }
+        json: JSON_TYPE = {"name": name}
 
         if app_id is not UNSET:
             json["app_id"] = app_id

@@ -27,7 +27,6 @@ def test_create_success(
     )
     project = client.projects.create(
         name=project_name,
-        product_code="123",
         settings={"sla_minutes": 5},
         app_id="test",
     )
@@ -54,10 +53,7 @@ def test_create_failure(
         json=mock_error,
     )
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
-        client.projects.create(
-            name=project_name,
-            product_code="123",
-        )
+        client.projects.create(name=project_name)
     assert exc_info.value.response.status_code == 404
     assert exc_info.value.response.json() == mock_error
 
