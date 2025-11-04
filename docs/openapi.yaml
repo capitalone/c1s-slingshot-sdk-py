@@ -23,23 +23,6 @@ security:
   - ApiKeyAuth: []
 
 paths:
-  /health:
-    get:
-      tags: [Utility]
-      summary: Check service health
-      operationId: checkServiceHealth
-      responses:
-        '200':
-          description: Service is healthy
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "healthy"
-
   /projects:
     get:
       tags: [Projects]
@@ -219,22 +202,22 @@ components:
       description: Invalid request.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/Error' }
+          schema: { $ref: '#/components/schemas/BadRequestError' }
     Unauthorized:
       description: Unauthorized access.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/Error' }
+          schema: { $ref: '#/components/schemas/UnauthorizedError' }
     NotFound:
       description: Resource not found.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/Error' }
+          schema: { $ref: '#/components/schemas/NotFoundError' }
     Conflict:
       description: Conflict with existing resource.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/Error' }
+          schema: { $ref: '#/components/schemas/ConflictError' }
     UnprocessableEntity:
       description: Validation error.
       content:
@@ -307,20 +290,61 @@ components:
           type: object
           additionalProperties: true
 
-    Error:
+    BadRequestError:
       type: object
-      required: [code, message]
       properties:
-        code: { type: string, example: "invalid_argument" }
-        message: { type: string, example: "Invalid page size." }
-        details:
+        detail:
           type: array
           items:
             type: object
             properties:
-              field: { type: string, example: "size" }
-              issue: { type: string, example: "must be <= 200" }
+              loc:
+                type: array
+                items: { type: string }
+                example: ["query", "page"]
+              msg:
+                type: string
+                example: "Invalid page size."
+              type:
+                type: string
+                example: "value_error"
+
+    UnauthorizedError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "Authentication required."
+
+    NotFoundError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "The requested resource was not found."
+
+    ConflictError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "Project with this name already exists."
 
     ValidationError:
-      allOf:
-        - $ref: '#/components/schemas/Error'
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            properties:
+              loc:
+                type: array
+                items: { type: string }
+                example: ["body", "name"]
+              msg:
+                type: string
+                example: "This field is required."
+              type:
+                type: string
+                example: "value_error.missing"
