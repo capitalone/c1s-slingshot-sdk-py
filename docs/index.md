@@ -9,7 +9,7 @@ Welcome to the Capital One Slingshot SDK documentation!
 quickstart
 api
 examples
-changelog
+CHANGELOG
 ```
 
 ## Overview
