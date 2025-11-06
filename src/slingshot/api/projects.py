@@ -45,11 +45,10 @@ class ProjectAPI:
     def create(
         self,
         name: str,
-        product_code: str,
+        workspaceId: str,
         app_id: Optional[str] = UNSET,
         cluster_path: Optional[str] = UNSET,
         job_id: Optional[str] = UNSET,
-        workspaceId: Optional[str] = UNSET,
         subscriptionId: Optional[str] = UNSET,
         description: Optional[str] = UNSET,
         cluster_log_url: Optional[str] = UNSET,
@@ -61,13 +60,12 @@ class ProjectAPI:
 
         Args:
             name (str): The name of the project.
-            product_code (str): The product code associated with the project.
+            workspaceId (str): The workspace ID.
             settings (ProjectAdditionalSettingsSchema): A object for
             additional settings.
             app_id (Optional[str], optional): The application ID.
             cluster_path (Optional[str], optional): The path to the cluster.
             job_id (Optional[str], optional): The job ID.
-            workspaceId (Optional[str], optional): The workspace ID.
             subscriptionId (Optional[str], optional): The subscription ID.
             description (Optional[str], optional): A description for the project.
             cluster_log_url (Optional[str], optional): The URL for cluster logs.
@@ -81,10 +79,7 @@ class ProjectAPI:
             ProjectSchema: The details of the newly created project.
 
         """
-        json: JSON_TYPE = {
-            "name": name,
-            "product_code": product_code,
-        }
+        json: JSON_TYPE = {"name": name, "workspaceId": workspaceId}
 
         if app_id is not UNSET:
             json["app_id"] = app_id
@@ -92,8 +87,6 @@ class ProjectAPI:
             json["cluster_path"] = cluster_path
         if job_id is not UNSET:
             json["job_id"] = job_id
-        if workspaceId is not UNSET:
-            json["workspaceId"] = workspaceId
         if subscriptionId is not UNSET:
             json["subscriptionId"] = subscriptionId
         if description is not UNSET:

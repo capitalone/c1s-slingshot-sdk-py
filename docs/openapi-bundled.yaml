@@ -21,23 +21,6 @@ tags:
 security:
 - ApiKeyAuth: []
 paths:
-  /health:
-    get:
-      tags:
-      - Utility
-      summary: Check service health
-      operationId: checkServiceHealth
-      responses:
-        '200':
-          description: Service is healthy
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: healthy
   /projects:
     get:
       tags:
@@ -142,12 +125,12 @@ paths:
               type: object
               required:
               - name
+              - workspaceId
               properties:
                 name:
                   type: string
-                product_code:
+                workspaceId:
                   type: string
-                  nullable: true
                 description:
                   type: string
                   nullable: true
@@ -155,7 +138,7 @@ paths:
               sample:
                 value:
                   name: Pricing Optimization
-                  product_code: PRC
+                  workspaceId: '12345678901234'
                   description: Optimize price points for conversions
       responses:
         '201':
@@ -195,109 +178,70 @@ paths:
             application/json:
               schema:
                 type: object
-                required:
-                - code
-                - message
                 properties:
-                  code:
-                    type: string
-                    example: invalid_argument
-                  message:
-                    type: string
-                    example: Invalid page size.
-                  details:
+                  detail:
                     type: array
                     items:
                       type: object
                       properties:
-                        field:
+                        loc:
+                          type: array
+                          items:
+                            type: string
+                          example:
+                          - query
+                          - page
+                        msg:
                           type: string
-                          example: size
-                        issue:
+                          example: Invalid page size.
+                        type:
                           type: string
-                          example: must be <= 200
+                          example: value_error
         '401':
           description: Unauthorized access.
           content:
             application/json:
               schema:
                 type: object
-                required:
-                - code
-                - message
                 properties:
-                  code:
+                  detail:
                     type: string
-                    example: invalid_argument
-                  message:
-                    type: string
-                    example: Invalid page size.
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: size
-                        issue:
-                          type: string
-                          example: must be <= 200
+                    example: Authentication required.
         '409':
           description: Conflict with existing resource.
           content:
             application/json:
               schema:
                 type: object
-                required:
-                - code
-                - message
                 properties:
-                  code:
+                  detail:
                     type: string
-                    example: invalid_argument
-                  message:
-                    type: string
-                    example: Invalid page size.
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: size
-                        issue:
-                          type: string
-                          example: must be <= 200
+                    example: Project with this name already exists.
         '422':
           description: Validation error.
           content:
             application/json:
               schema:
-                allOf:
-                - type: object
-                  required:
-                  - code
-                  - message
-                  properties:
-                    code:
-                      type: string
-                      example: invalid_argument
-                    message:
-                      type: string
-                      example: Invalid page size.
-                    details:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          field:
+                type: object
+                properties:
+                  detail:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        loc:
+                          type: array
+                          items:
                             type: string
-                            example: size
-                          issue:
-                            type: string
-                            example: must be <= 200
+                          example:
+                          - body
+                          - name
+                        msg:
+                          type: string
+                          example: This field is required.
+                        type:
+                          type: string
+                          example: value_error.missing
   /projects/{project_id}:
     get:
       tags:
@@ -349,27 +293,10 @@ paths:
             application/json:
               schema:
                 type: object
-                required:
-                - code
-                - message
                 properties:
-                  code:
+                  detail:
                     type: string
-                    example: invalid_argument
-                  message:
-                    type: string
-                    example: Invalid page size.
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: size
-                        issue:
-                          type: string
-                          example: must be <= 200
+                    example: The requested resource was not found.
     patch:
       tags:
       - Projects
@@ -429,54 +356,20 @@ paths:
             application/json:
               schema:
                 type: object
-                required:
-                - code
-                - message
                 properties:
-                  code:
+                  detail:
                     type: string
-                    example: invalid_argument
-                  message:
-                    type: string
-                    example: Invalid page size.
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: size
-                        issue:
-                          type: string
-                          example: must be <= 200
+                    example: The requested resource was not found.
         '409':
           description: Conflict with existing resource.
           content:
             application/json:
               schema:
                 type: object
-                required:
-                - code
-                - message
                 properties:
-                  code:
+                  detail:
                     type: string
-                    example: invalid_argument
-                  message:
-                    type: string
-                    example: Invalid page size.
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: size
-                        issue:
-                          type: string
-                          example: must be <= 200
+                    example: Project with this name already exists.
   /projects/{project_id}/recommendations:
     post:
       tags:
@@ -548,27 +441,10 @@ paths:
             application/json:
               schema:
                 type: object
-                required:
-                - code
-                - message
                 properties:
-                  code:
+                  detail:
                     type: string
-                    example: invalid_argument
-                  message:
-                    type: string
-                    example: Invalid page size.
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: size
-                        issue:
-                          type: string
-                          example: must be <= 200
+                    example: The requested resource was not found.
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -614,136 +490,80 @@ components:
         application/json:
           schema:
             type: object
-            required:
-            - code
-            - message
             properties:
-              code:
-                type: string
-                example: invalid_argument
-              message:
-                type: string
-                example: Invalid page size.
-              details:
+              detail:
                 type: array
                 items:
                   type: object
                   properties:
-                    field:
+                    loc:
+                      type: array
+                      items:
+                        type: string
+                      example:
+                      - query
+                      - page
+                    msg:
                       type: string
-                      example: size
-                    issue:
+                      example: Invalid page size.
+                    type:
                       type: string
-                      example: must be <= 200
+                      example: value_error
     Unauthorized:
       description: Unauthorized access.
       content:
         application/json:
           schema:
             type: object
-            required:
-            - code
-            - message
             properties:
-              code:
+              detail:
                 type: string
-                example: invalid_argument
-              message:
-                type: string
-                example: Invalid page size.
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: size
-                    issue:
-                      type: string
-                      example: must be <= 200
+                example: Authentication required.
     NotFound:
       description: Resource not found.
       content:
         application/json:
           schema:
             type: object
-            required:
-            - code
-            - message
             properties:
-              code:
+              detail:
                 type: string
-                example: invalid_argument
-              message:
-                type: string
-                example: Invalid page size.
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: size
-                    issue:
-                      type: string
-                      example: must be <= 200
+                example: The requested resource was not found.
     Conflict:
       description: Conflict with existing resource.
       content:
         application/json:
           schema:
             type: object
-            required:
-            - code
-            - message
             properties:
-              code:
+              detail:
                 type: string
-                example: invalid_argument
-              message:
-                type: string
-                example: Invalid page size.
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: size
-                    issue:
-                      type: string
-                      example: must be <= 200
+                example: Project with this name already exists.
     UnprocessableEntity:
       description: Validation error.
       content:
         application/json:
           schema:
-            allOf:
-            - type: object
-              required:
-              - code
-              - message
-              properties:
-                code:
-                  type: string
-                  example: invalid_argument
-                message:
-                  type: string
-                  example: Invalid page size.
-                details:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      field:
+            type: object
+            properties:
+              detail:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    loc:
+                      type: array
+                      items:
                         type: string
-                        example: size
-                      issue:
-                        type: string
-                        example: must be <= 200
+                      example:
+                      - body
+                      - name
+                    msg:
+                      type: string
+                      example: This field is required.
+                    type:
+                      type: string
+                      example: value_error.missing
   schemas:
     Project:
       type: object
@@ -768,12 +588,12 @@ components:
       type: object
       required:
       - name
+      - workspaceId
       properties:
         name:
           type: string
-        product_code:
+        workspaceId:
           type: string
-          nullable: true
         description:
           type: string
           nullable: true
@@ -858,50 +678,63 @@ components:
         details:
           type: object
           additionalProperties: true
-    Error:
+    BadRequestError:
       type: object
-      required:
-      - code
-      - message
       properties:
-        code:
-          type: string
-          example: invalid_argument
-        message:
-          type: string
-          example: Invalid page size.
-        details:
+        detail:
           type: array
           items:
             type: object
             properties:
-              field:
+              loc:
+                type: array
+                items:
+                  type: string
+                example:
+                - query
+                - page
+              msg:
                 type: string
-                example: size
-              issue:
+                example: Invalid page size.
+              type:
                 type: string
-                example: must be <= 200
+                example: value_error
+    UnauthorizedError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: Authentication required.
+    NotFoundError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: The requested resource was not found.
+    ConflictError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: Project with this name already exists.
     ValidationError:
-      allOf:
-      - type: object
-        required:
-        - code
-        - message
-        properties:
-          code:
-            type: string
-            example: invalid_argument
-          message:
-            type: string
-            example: Invalid page size.
-          details:
-            type: array
-            items:
-              type: object
-              properties:
-                field:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            properties:
+              loc:
+                type: array
+                items:
                   type: string
-                  example: size
-                issue:
-                  type: string
-                  example: must be <= 200
+                example:
+                - body
+                - name
+              msg:
+                type: string
+                example: This field is required.
+              type:
+                type: string
+                example: value_error.missing
