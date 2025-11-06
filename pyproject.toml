@@ -89,7 +89,7 @@ readme = "README.md"
 requires-python = ">=3.9,<3.14"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
-version = "0.7.0"
+version = "1.0.0"
 
 [project.urls]
 Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
