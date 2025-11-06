@@ -41,7 +41,6 @@ class ProjectSchema(TypedDict):
     job_id: Optional[str]
     workspace_id: Optional[str]
     creator_id: Optional[str]
-    product_code: Optional[str]
     description: Optional[str]
     settings: Optional[ProjectSettingsSchema]
     metrics: Optional[ProjectMetricsSchema]

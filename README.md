@@ -36,9 +36,11 @@ from slingshot import SlingshotClient
 # Initialize the client (uses SLINGSHOT_API_KEY environment variable)
 client = SlingshotClient()
 
-# List all projects
-projects = client.projects.list()
-print(f"Found {len(projects)} projects")
+# List projects
+all_projects = []
+for project in client.projects.iterate_projects(include=[]):
+    all_projects.append(project)
+print(f"Found {len(all_projects)} projects.")
 ```
 
 ## Contributing
