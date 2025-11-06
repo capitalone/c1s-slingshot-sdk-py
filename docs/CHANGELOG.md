@@ -6,7 +6,7 @@
 
 ### Feat
 
-- Remove product_code and documentation updates (#52)
+- Remove product_code and make workspaceId required for project.create, and documentation updates (#52)
 
 ## v0.7.0 (2025-10-23)
 
