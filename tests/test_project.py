@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 import httpx
 import pytest
@@ -113,13 +114,14 @@ def test_update_failure(
     assert exc_info.value.response.json() == mock_error
 
 
+@pytest.mark.parametrize("include", [["creator"], [], None])
 def test_get_projects_success(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
+    include: Optional[list[str]],
 ) -> None:
     """Test project list fetching success."""
     creator_id = "test_creator"
-    include = ["id"]
     app_id = "test"
     mock_response = {
         "items": [
@@ -129,16 +131,15 @@ def test_get_projects_success(
         "page": 2,
         "pages": 2,
     }
-    url = httpx.URL(
-        url=f"{client._api_url}/v1/projects",
-        params={
-            "include": include,
-            "page": 2,
-            "size": 25,
-            "creator_id": creator_id,
-            "app_id": app_id,
-        },
-    )
+    params = {
+        "page": 2,
+        "size": 25,
+        "creator_id": creator_id,
+        "app_id": app_id,
+    }
+    if include:
+        params["include"] = include
+    url = httpx.URL(url=f"{client._api_url}/v1/projects", params=params)
     httpx_mock.add_response(
         method="GET",
         url=url,
@@ -159,23 +160,23 @@ def test_get_projects_success(
     assert response_page["pages"] == 2
 
 
+@pytest.mark.parametrize("include", [["creator"], [], None])
 def test_get_projects_failure(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
+    include: Optional[list[str]],
 ) -> None:
     """Test project list fetching failure."""
     creator_id = "test_creator"
-    include = []
     mock_error = {"error": "Projects cannot be retrieved"}
-    url = httpx.URL(
-        url=f"{client._api_url}/v1/projects",
-        params={
-            "include": include,
-            "page": 1,
-            "size": 50,
-            "creator_id": creator_id,
-        },
-    )
+    params = {
+        "page": 1,
+        "size": 50,
+        "creator_id": creator_id,
+    }
+    if include:
+        params["include"] = include
+    url = httpx.URL(url=f"{client._api_url}/v1/projects", params=params)
     httpx_mock.add_response(method="GET", url=url, status_code=404, json=mock_error)
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
         client.projects.get_projects(
@@ -186,13 +187,14 @@ def test_get_projects_failure(
     assert exc_info.value.response.json() == mock_error
 
 
+@pytest.mark.parametrize("include", [["creator"], [], None])
 def test_iterate_projects(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
+    include: Optional[list[str]],
 ) -> None:
     """Test project list fetching page iteration."""
     creator_id = "test_creator"
-    include = ["id"]
     app_id = "test"
 
     projects = [{"id": "project_id_123"}] * 100
@@ -238,15 +240,17 @@ def test_iterate_projects(
     assert result == projects
 
 
+@pytest.mark.parametrize("include", [["creator"], [], None])
 def test_get_project_success(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
+    include: Optional[list[str]],
 ) -> None:
     """Test fetching a project by its ID."""
     project_id = "project_id_123"
-    include = ["id"]
     mock_response = {"id": "project_id_123"}
-    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}", params={"include": include})
+    params = {"include": include} if include else None
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}", params=params)
     httpx_mock.add_response(
         method="GET",
         url=url,
@@ -264,9 +268,8 @@ def test_get_project_missing(
 ) -> None:
     """Test error handling when fetching a project."""
     project_id = "project_id_123"
-    include = []
     mock_error = {"error": "Project not found"}
-    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}", params={"include": include})
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}")
     httpx_mock.add_response(
         method="GET",
         url=url,
@@ -274,7 +277,7 @@ def test_get_project_missing(
         json=mock_error,
     )
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
-        client.projects.get_project(project_id=project_id, include=[])
+        client.projects.get_project(project_id=project_id)
     assert exc_info.value.response.status_code == 404
     assert exc_info.value.response.json() == mock_error
 
