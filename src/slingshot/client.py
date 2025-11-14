@@ -91,7 +91,7 @@ class SlingshotClient:
         endpoint: str,
         json: Optional[JSON_TYPE] = None,
         params: Optional[QueryParams] = None,
-    ) -> JSON_TYPE:
+    ) -> Optional[JSON_TYPE]:
         """Make an API request to the Slingshot API."""
         headers = {
             "Auth": self._api_key,
@@ -105,6 +105,8 @@ class SlingshotClient:
         response.raise_for_status()
         if response.headers and response.headers.get("content-type", "") == "application/json":
             return response.json()
+        elif response.status_code == 204:
+            return None
         else:
             raise RuntimeError(
                 "Unhandled API response: response was not of type 'application/json'"

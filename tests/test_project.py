@@ -385,3 +385,35 @@ def test_get_project_recommendation_failure(
         )
     assert exc_info.value.response.status_code == 404
     assert exc_info.value.response.json() == mock_error
+
+
+def test_reset_project_success(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+) -> None:
+    """Test resetting a project by its ID."""
+    project_id = "project_id_123"
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}")
+    httpx_mock.add_response(
+        method="POST",
+        url=url,
+        status_code=204,
+    )
+    assert client.projects.reset_project(project_id=project_id) is None
+
+
+def test_reset_project_missing(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+) -> None:
+    """Test 404 error handling when resetting a project."""
+    project_id = "project_id_123"
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}")
+    httpx_mock.add_response(
+        method="POST",
+        url=url,
+        status_code=404,
+    )
+    with pytest.raises(httpx.HTTPStatusError) as exc_info:
+        client.projects.reset_project(project_id=project_id)
+    assert exc_info.value.response.status_code == 404

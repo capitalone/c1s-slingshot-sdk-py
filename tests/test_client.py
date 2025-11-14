@@ -95,7 +95,7 @@ def test_no_api_key_raises_error() -> None:
 
 
 @pytest.mark.parametrize("status_code", [200])
-def test_reponse_non_json_content_type(
+def test_response_non_json_content_type(
     httpx_mock: HTTPXMock, client: SlingshotClient, status_code: int
 ) -> None:
     """Test response coming back without json content type."""
@@ -111,3 +111,16 @@ def test_reponse_non_json_content_type(
     assert (
         str(exc_info.value) == "Unhandled API response: response was not of type 'application/json'"
     )
+
+
+@pytest.mark.parametrize("method", ["GET", "POST", "PUT"])
+def test_response_204(httpx_mock: HTTPXMock, client: SlingshotClient, method: str) -> None:
+    """Test response coming back for a 204 no content."""
+    httpx_mock.add_response(
+        method=method,
+        url=f"{client._api_url}/TEST",
+        status_code=204,
+    )
+
+    # pyright is not happy with method: str against str Literal methods...
+    assert client._api_request(method=method, endpoint="/TEST") is None  # pyright: ignore

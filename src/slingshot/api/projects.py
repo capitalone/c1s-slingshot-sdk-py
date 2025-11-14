@@ -389,3 +389,14 @@ class ProjectAPI:
             RecommendationDetailsSchema,
             response.get("result"),
         )
+
+    def reset_project(self, project_id: str) -> None:
+        """Reset a project by its ID, removing all previous submission data.
+
+        Args:
+            project_id (str): The ID of the project to reset.
+
+        Returns:
+            None
+        """
+        self.client._api_request(method="POST", endpoint=f"/v1/projects/{project_id}")
