@@ -219,7 +219,7 @@ class ProjectAPI:
 
     def get_projects(
         self,
-        include: list[str],
+        include: Optional[list[str]] = None,
         creator_id: Optional[str] = None,
         app_id: Optional[str] = None,
         job_id: Optional[str] = None,
@@ -229,7 +229,7 @@ class ProjectAPI:
         """Retrieve a paginated list of projects based on filter criteria.
 
         Args:
-            include (list[str]): Specifies related resources to include the
+            include (Optional[list[str]]): Specifies related resources to include the
             response.
             creator_id (Optional[str], optional): The ID of the creator to
             filter projects by. Defaults to None.
@@ -247,11 +247,13 @@ class ProjectAPI:
 
         """
         params: QueryParams = {
-            "include": include,
             "page": cast(str, page),
             "size": cast(str, size),
         }
 
+        if include:
+            # pyright is not happy with list[str] although QueryParams allows it
+            params["include"] = include  # pyright: ignore
         if creator_id is not None:
             params["creator_id"] = creator_id
         if app_id is not None:
@@ -268,7 +270,7 @@ class ProjectAPI:
 
     def iterate_projects(
         self,
-        include: list[str],
+        include: Optional[list[str]] = None,
         creator_id: Optional[str] = None,
         app_id: Optional[str] = None,
         job_id: Optional[str] = None,
@@ -278,7 +280,7 @@ class ProjectAPI:
         """A memory-efficient generator that fetches all projects page by page.
 
         Args:
-            include (list[str]): Specifies related resources to include the
+            include (Optional[list[]]): Specifies related resources to include the
             response.
             creator_id (Optional[str], optional): The ID of the creator to
             filter projects by. Defaults to None.
@@ -317,19 +319,21 @@ class ProjectAPI:
             except httpx.HTTPStatusError:
                 break
 
-    def get_project(self, project_id: str, include: list[str]) -> ProjectSchema:
+    def get_project(self, project_id: str, include: Optional[list[str]] = None) -> ProjectSchema:
         """Fetch a project by its ID.
 
         Args:
             project_id (str): The ID of the project to fetch.
-            include (list[str]): Specifies related resources to include the
+            include (Optional[list[str]]): Specifies related resources to include the
             response.
 
         Returns:
             ProjectSchema: The project details.
 
         """
-        params: QueryParams = {"include": include}
+        params: QueryParams = {}
+        if include:
+            params["include"] = include
         response = self.client._api_request(
             method="GET", endpoint=f"/v1/projects/{project_id}", params=params
         )
