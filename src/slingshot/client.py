@@ -103,7 +103,11 @@ class SlingshotClient:
         json = _remove_unset_keys(json)
         response = httpx.request(method=method, url=url, headers=headers, json=json, params=params)
         response.raise_for_status()
-        if response.headers and response.headers.get("content-type", "") == "application/json":
+        if (
+            response.headers
+            and response.headers.get("content-type", "") == "application/json"
+            and response.text  # Some routes can return content-type json without data, usually with 204 code.
+        ):
             return response.json()
         elif response.status_code == 204:
             return None

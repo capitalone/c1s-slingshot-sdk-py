@@ -401,6 +401,7 @@ def test_reset_project_success(
         method="POST",
         url=url,
         status_code=204,
+        headers={"content-type": "application/json"},
     )
     assert client.projects.reset_project(project_id=project_id) is None
 
