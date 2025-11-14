@@ -167,6 +167,18 @@ paths:
               schema: { $ref: '#/components/schemas/Recommendation' }
         '404': { $ref: '#/components/responses/NotFound' }
 
+  /projects/{project_id}/reset:
+    post:
+      tags: [ Utility ]
+      summary: Reset a project, removing all submissions data
+      operationId: resetProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '204':
+          description: Project reset successfully.
+        '404': { $ref: '#/components/responses/NotFound' }
+
 components:
   securitySchemes:
     ApiKeyAuth:

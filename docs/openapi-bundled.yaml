@@ -445,6 +445,32 @@ paths:
                   detail:
                     type: string
                     example: The requested resource was not found.
+  /projects/{project_id}/reset:
+    post:
+      tags:
+      - Utility
+      summary: Reset a project, removing all submissions data
+      operationId: resetProject
+      parameters:
+      - in: path
+        name: project_id
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the project.
+      responses:
+        '204':
+          description: Project reset successfully.
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: The requested resource was not found.
 components:
   securitySchemes:
     ApiKeyAuth:
