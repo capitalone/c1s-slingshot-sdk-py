@@ -399,4 +399,4 @@ class ProjectAPI:
         Returns:
             None
         """
-        self.client._api_request(method="POST", endpoint=f"/v1/projects/{project_id}")
+        self.client._api_request(method="POST", endpoint=f"/v1/projects/{project_id}/reset")

@@ -393,7 +393,7 @@ def test_reset_project_success(
 ) -> None:
     """Test resetting a project by its ID."""
     project_id = "project_id_123"
-    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}")
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}/reset")
     httpx_mock.add_response(
         method="POST",
         url=url,
@@ -408,7 +408,7 @@ def test_reset_project_missing(
 ) -> None:
     """Test 404 error handling when resetting a project."""
     project_id = "project_id_123"
-    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}")
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}/reset")
     httpx_mock.add_response(
         method="POST",
         url=url,
