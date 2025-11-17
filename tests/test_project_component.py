@@ -1,7 +1,7 @@
 import math
 import random
 import re
-from typing import Any, cast
+from typing import Any, Optional, cast
 
 import httpx
 import pytest
@@ -202,10 +202,12 @@ def client() -> SlingshotClient:
         (50),
     ],
 )
+@pytest.mark.parametrize("include", [["creator"], [], None])
 def test_call_get_project_n_times(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
     call_count: int,
+    include: Optional[list[str]],
 ) -> None:
     """Tests that `get_project` returns the correct data when called multiple times.
 
@@ -228,7 +230,7 @@ def test_call_get_project_n_times(
 
         result = client.projects.get_project(
             project_id=project_id,
-            include=["id", "name"],
+            include=include,
         )
 
         assert result == randomized_payload_set[i]
@@ -401,7 +403,7 @@ def test_iterate_projects(
 
     httpx_mock.add_callback(paginated_callback, method="GET", is_reusable=True)
 
-    result = list(client.projects.iterate_projects(include=["id"], size=page_size))
+    result = list(client.projects.iterate_projects(include=["creator"], size=page_size))
 
     assert len(result) == total_items
     assert result == full_dataset

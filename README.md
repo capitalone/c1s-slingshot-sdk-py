@@ -35,12 +35,19 @@ from slingshot import SlingshotClient
 
 # Initialize the client (uses SLINGSHOT_API_KEY environment variable)
 client = SlingshotClient()
+# If you want to pass your API key to the client without using the environment variable:
+# client = SlingshotClient(api_key="your API key")
 
 # List projects
 all_projects = []
-for project in client.projects.iterate_projects(include=[]):
+for project in client.projects.iterate_projects():
     all_projects.append(project)
+
 print(f"Found {len(all_projects)} projects.")
+
+# Get a specific project
+project = client.projects.get_project(all_projects[0]["id"])
+print(project)
 ```
 
 ## Contributing
