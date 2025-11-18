@@ -51,15 +51,16 @@ class SlingshotClient:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        api_url: str = DEFAULT_API_URL,
+        api_url: Optional[str] = None,
     ):
         """Initialize the Slingshot client.
 
         Args:
             api_key (str): The API key for authentication. If not provided, it will look
                 for the environment variable SLINGSHOT_API_KEY.
-            api_url (str): The base URL for the Slingshot API. Defaults to DEFAULT
-                API_URL.
+            api_url (str): The base URL for the Slingshot API. If not provided, it will look
+                for the environment variable SLINGSHOT_API_URL, if not set, it will default
+                to DEFAULT_API_URL
 
         Raises:
             ValueError: If the API key is not provided and not found in the environment.
@@ -69,7 +70,6 @@ class SlingshotClient:
             >>> client = SlingshotClient(api_key="your_api_key")
 
         """
-        self._api_url = api_url
         if not api_key:
             api_key = os.getenv("SLINGSHOT_API_KEY")
             if not api_key:
@@ -77,6 +77,8 @@ class SlingshotClient:
                     "API key must be provided either as a parameter or in the environment variable SLINGSHOT_API_KEY"
                 )
         self._api_key = api_key
+
+        self._api_url = api_url or os.getenv("SLINGSHOT_API_URL") or DEFAULT_API_URL
 
     @backoff.on_exception(
         backoff.expo,

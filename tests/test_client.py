@@ -1,4 +1,3 @@
-import os
 from importlib.metadata import version as get_version
 from typing import Literal
 
@@ -8,6 +7,8 @@ from pytest_httpx import HTTPXMock
 from slingshot.client import SlingshotClient
 
 __version__ = get_version("c1s-slingshot-sdk-py")
+
+from src.slingshot.client import DEFAULT_API_URL
 
 
 @pytest.mark.parametrize(
@@ -64,9 +65,17 @@ def test_post_put_retries_on_status_code(
     assert result == {"success": True}
 
 
-def test_api_key_from_env(client: SlingshotClient, httpx_mock: HTTPXMock) -> None:
+@pytest.fixture
+def set_SLINGSHOT_API_KEY_env_var(monkeypatch):
+    """The environment variable is automatically reverted by monkeypatch after the test."""
+    monkeypatch.setenv("SLINGSHOT_API_KEY", "test_api_key")
+    yield
+
+
+def test_api_key_from_env(
+    set_SLINGSHOT_API_KEY_env_var, client: SlingshotClient, httpx_mock: HTTPXMock
+) -> None:
     """Test that the API key can be set from environment variable."""
-    os.environ["SLINGSHOT_API_KEY"] = "test_api_key"
     client_with_env_key = SlingshotClient()
     httpx_mock.add_response(
         method="GET",
@@ -79,7 +88,6 @@ def test_api_key_from_env(client: SlingshotClient, httpx_mock: HTTPXMock) -> Non
         },
     )
     client_with_env_key.projects.get_project(project_id="test_project")
-    del os.environ["SLINGSHOT_API_KEY"]  # no leaks
 
 
 def test_no_api_key_raises_error() -> None:
@@ -89,6 +97,25 @@ def test_no_api_key_raises_error() -> None:
         match="API key must be provided either as a parameter or in the environment variable SLINGSHOT_API_KEY",
     ):
         SlingshotClient(api_key=None)
+
+
+@pytest.fixture
+def set_SLINGSHOT_API_URL_env_var(monkeypatch):
+    """The environment variable is automatically reverted by monkeypatch after the test."""
+    monkeypatch.setenv("SLINGSHOT_API_URL", "https://api.slingshot.com")
+    yield
+
+
+def test_api_url_from_env(set_SLINGSHOT_API_URL_env_var, client: SlingshotClient) -> None:
+    """Test that the API url can be set from environment variable."""
+    client = SlingshotClient(api_key="test_api_key")
+    assert client._api_url == "https://api.slingshot.com"
+
+
+def test_default_api_url(client: SlingshotClient) -> None:
+    """Test that the API url uses default if not passed and not in env vars."""
+    client = SlingshotClient(api_key="test_api_key")
+    assert client._api_url == DEFAULT_API_URL
 
 
 @pytest.mark.parametrize("status_code", [200])
