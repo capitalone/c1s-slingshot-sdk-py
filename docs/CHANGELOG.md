@@ -2,6 +2,12 @@
 
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
+## v1.1.0 (2025-11-17)
+
+### Feat
+
+- Add project reset route and make project get/list include argument optional (#55)
+
 ## v1.0.0 (2025-11-06)
 
 ### Feat
