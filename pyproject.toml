@@ -18,7 +18,7 @@ name = "cz_conventional_commits"
 tag_format = "v$version"
 version_scheme = "pep440"
 version_provider = "uv"
-changelog_file = "docs/changelog.md"
+changelog_file = "docs/CHANGELOG.md"
 update_changelog_on_bump = true
 version_files = ["pyproject.toml:version"]
 
@@ -92,8 +92,8 @@ license-files = ["LICENSE", "NOTICE"]
 version = "1.1.0"
 
 [project.urls]
-Home = "https://github.com/capitalone/c1-slingshot-sdk-py"
-Changelog = "https://github.com/capitalone/c1-slingshot-sdk-py/blob/main/CHANGELOG.md"
+Home = "https://github.com/capitalone/c1s-slingshot-sdk-py"
+Changelog = "https://github.com/capitalone/c1s-slingshot-sdk-py/blob/main/docs/CHANGELOG.md"
 
 [dependency-groups]
 dev = [
