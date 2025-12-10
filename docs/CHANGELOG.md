@@ -2,6 +2,13 @@
 
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
+## v1.2.0 (2025-12-10)
+
+### Feat
+
+- Update links in pyproject.toml and allow SLINGSHOT_API_URL in client (#58)
+- apply project recommendation
+
 ## v1.1.0 (2025-11-17)
 
 ### Feat
