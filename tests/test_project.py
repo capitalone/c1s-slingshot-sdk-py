@@ -421,3 +421,80 @@ def test_reset_project_missing(
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
         client.projects.reset_project(project_id=project_id)
     assert exc_info.value.response.status_code == 404
+
+
+def test_apply_project_recommendation_success(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+) -> None:
+    """Test applying a project recommendation successfully."""
+    project_id = "project_id_123"
+    recommendation_id = "recommendation_123"
+    mock_response = {"result": "Recommendation applied"}
+    url = httpx.URL(
+        url=(
+            f"{client._api_url}/v1/projects/{project_id}/recommendations/{recommendation_id}/apply"
+        )
+    )
+    httpx_mock.add_response(
+        method="POST",
+        url=url,
+        status_code=200,
+        json=mock_response,
+    )
+    message = client.projects.apply_project_recommendation(
+        recommendation_id=recommendation_id,
+        project_id=project_id,
+    )
+    assert message == mock_response["result"]
+
+
+@pytest.mark.parametrize(
+    "status_code,project_id,mock_error",
+    [
+        (404, "project_id_123", {"error": "Recommendation cannot be applied"}),
+        (
+            409,
+            "project_id_123",
+            {"error": "No workspace is configured for job job_12345"},
+        ),
+        (
+            409,
+            "project_id_123",
+            {"error": "Project project_id_123 is not associated with a job"},
+        ),
+        (
+            422,
+            "project_id_123",
+            {"error": "Recommendation does not contain a valid configuration to apply"},
+        ),
+        (503, "project_id_123", {"error": "No rows found when one was expected"}),
+    ],
+)
+def test_apply_project_recommendation_failure(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+    status_code: int,
+    project_id: str,
+    mock_error: dict,
+) -> None:
+    """Test applying a project recommendation failure."""
+    recommendation_id = "recommendation_123"
+    url = httpx.URL(
+        url=(
+            f"{client._api_url}/v1/projects/{project_id}/recommendations/{recommendation_id}/apply"
+        )
+    )
+    httpx_mock.add_response(
+        method="POST",
+        url=url,
+        status_code=status_code,
+        json=mock_error,
+    )
+    with pytest.raises(httpx.HTTPStatusError) as exc_info:
+        client.projects.apply_project_recommendation(
+            recommendation_id=recommendation_id,
+            project_id=project_id,
+        )
+    assert exc_info.value.response.status_code == status_code
+    assert exc_info.value.response.json() == mock_error

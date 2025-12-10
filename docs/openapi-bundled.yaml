@@ -471,6 +471,84 @@ paths:
                   detail:
                     type: string
                     example: The requested resource was not found.
+  /projects/{project_id}/recommendations/{recommendation_id}/apply:
+    post:
+      tags:
+      - Recommendations
+      summary: Apply a recommendation to a project
+      operationId: applyRecommendation
+      parameters:
+      - in: path
+        name: project_id
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the project.
+      - in: path
+        name: recommendation_id
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the recommendation.
+      responses:
+        '200':
+          description: Recommendation applied.
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: The requested resource was not found.
+        '409':
+          description: Conflict with existing resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: Project with this name already exists.
+        '422':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        loc:
+                          type: array
+                          items:
+                            type: string
+                          example:
+                          - body
+                          - name
+                        msg:
+                          type: string
+                          example: This field is required.
+                        type:
+                          type: string
+                          example: value_error.missing
+        '503':
+          description: Service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: We have been notified of the error and are looking into
+                      the issue.
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -493,6 +571,13 @@ components:
         minimum: 1
         default: 1
       description: 1-based page index.
+    RecommendationId:
+      in: path
+      name: recommendation_id
+      required: true
+      schema:
+        type: string
+      description: Unique identifier for the recommendation.
     Size:
       in: query
       name: size
@@ -590,6 +675,17 @@ components:
                     type:
                       type: string
                       example: value_error.missing
+    ServiceUnavailable:
+      description: Service is temporarily unavailable.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: We have been notified of the error and are looking into the
+                  issue.
   schemas:
     Project:
       type: object
@@ -764,3 +860,9 @@ components:
               type:
                 type: string
                 example: value_error.missing
+    ServiceUnavailableError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: We have been notified of the error and are looking into the issue.

@@ -344,11 +344,11 @@ class ProjectAPI:
 
         Args:
             project_id (str): The ID of the project to create a recommendation
-            for.
+                for.
 
         Returns:
             RecommendationDetailsSchema: The recommendation creation status
-            object.
+                object.
 
         """
         response = cast(
@@ -374,7 +374,7 @@ class ProjectAPI:
         Args:
             recommendation_id (str): The ID of the recommendation to fetch.
             project_id (str): The ID of the project that the recommendation
-            belongs to.
+                belongs to.
 
         Returns:
             RecommendationDetailsSchema: The details of the specific
@@ -391,6 +391,39 @@ class ProjectAPI:
 
         return cast(
             RecommendationDetailsSchema,
+            response.get("result"),
+        )
+
+    def apply_project_recommendation(
+        self,
+        recommendation_id: str,
+        project_id: str,
+    ) -> str:
+        """Apply a recommendation to the Slingshot project.
+
+        The recommendation is applied to the Databricks job associated
+        with the Slingshot project.
+
+        Args:
+            recommendation_id (str): The ID of the recommendation to fetch.
+            project_id (str): The ID of the project that the recommendation
+                belongs to.
+
+        Returns:
+            str: The message received from the Slingshot API after applying
+                the recommendation.
+
+        """
+        response = cast(
+            dict[str, Any],
+            self.client._api_request(
+                method="POST",
+                endpoint=f"/v1/projects/{project_id}/recommendations/{recommendation_id}/apply",
+            ),
+        )
+
+        return cast(
+            str,
             response.get("result"),
         )
 

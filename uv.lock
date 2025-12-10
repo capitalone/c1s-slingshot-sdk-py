@@ -116,6 +116,7 @@ dependencies = [
     { name = "httpx" },
     { name = "idna" },
     { name = "sniffio" },
+    { name = "typing-extensions" },
 ]
 
 [package.dev-dependencies]
@@ -167,6 +168,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.23" },
     { name = "idna", specifier = ">=2.8" },
     { name = "sniffio", specifier = ">=1.2.0" },
+    { name = "typing-extensions", specifier = ">=4.1.0" },
 ]
 
 [package.metadata.requires-dev]
