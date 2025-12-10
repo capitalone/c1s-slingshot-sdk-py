@@ -169,7 +169,7 @@ paths:
 
   /projects/{project_id}/reset:
     post:
-      tags: [ Utility ]
+      tags: [Utility]
       summary: Reset a project, removing all submissions data
       operationId: resetProject
       parameters:
@@ -178,6 +178,22 @@ paths:
         '204':
           description: Project reset successfully.
         '404': { $ref: '#/components/responses/NotFound' }
+
+  /projects/{project_id}/recommendations/{recommendation_id}/apply:
+    post:
+      tags: [Recommendations]
+      summary: Apply a recommendation to a project
+      operationId: applyRecommendation
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+        - $ref: '#/components/parameters/RecommendationId'
+      responses:
+        '200':
+          description: Recommendation applied.
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/UnprocessableEntity' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
 
 components:
   securitySchemes:
@@ -198,6 +214,12 @@ components:
       name: page
       schema: { type: integer, minimum: 1, default: 1 }
       description: 1-based page index.
+    RecommendationId:
+      in: path
+      name: recommendation_id
+      required: true
+      schema: { type: string }
+      description: Unique identifier for the recommendation.
     Size:
       in: query
       name: size
@@ -235,6 +257,11 @@ components:
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ValidationError' }
+    ServiceUnavailable:
+      description: Service is temporarily unavailable.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ServiceUnavailableError' }
 
   schemas:
     Project:
@@ -360,3 +387,10 @@ components:
               type:
                 type: string
                 example: "value_error.missing"
+
+    ServiceUnavailableError:
+      type: object
+      properties:
+        detail:
+          type: string
+          example: "We have been notified of the error and are looking into the issue."
