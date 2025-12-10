@@ -19,7 +19,7 @@ jobs:
         uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
         with:
           version: "latest"
-      - name: Commitzen next-version (dry-run)
+      - name: Commitizen next-version (dry-run)
         id: bump-version
         run: |
           OUTPUT=$(uv run cz bump --yes --get-next)
