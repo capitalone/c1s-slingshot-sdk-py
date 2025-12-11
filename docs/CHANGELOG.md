@@ -2,6 +2,9 @@
 
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
+## v1.2.1 (2025-12-10)
+No changes. Bumping patch number to resolve filename conflict in PyPI.
+
 ## v1.2.0 (2025-12-10)
 
 ### Feat
