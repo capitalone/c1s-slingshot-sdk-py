@@ -71,7 +71,6 @@ class ProjectAPI:
             cluster_log_url (Optional[str], optional): The URL for cluster logs.
             settings (AssignSettingsSchema, optional): An object that specifies options.
                 sla_minutes (Optional[int], optional): Option to set the SLA minutes.
-                fix_scaling_type (Optional[bool], optional): Option to fix the scaling type.
                 auto_apply_recs (Optional[bool], optional): Option to auto apply recommendations.
                 optimize_instance_size (Optional[bool], optional): Option to optimize the instance size.
 
@@ -97,11 +96,6 @@ class ProjectAPI:
         if settings is not UNSET and settings is not None:
             json["settings"] = {}
             _dict_set_if_not_unset(settings, json["settings"], "sla_minutes")
-            _dict_set_if_not_unset(
-                settings,
-                json["settings"],
-                "fix_scaling_type",
-            )
             _dict_set_if_not_unset(
                 settings,
                 json["settings"],
@@ -157,7 +151,6 @@ class ProjectAPI:
             cluster_log_url (Optional[str], optional): The new URL for cluster logs.
             settings (AssignSettingsSchema, optional): An object that specifies options.
                 sla_minutes (Optional[int], optional): Option to set the SLA minutes.
-                fix_scaling_type (Optional[bool], optional): Option to fix the scaling type.
                 auto_apply_recs (Optional[bool], optional): Option to auto apply recommendations.
                 optimize_instance_size (Optional[bool], optional): Option to optimize the instance size.
 
@@ -185,11 +178,6 @@ class ProjectAPI:
         if settings is not UNSET and settings is not None:
             json["settings"] = {}
             _dict_set_if_not_unset(settings, json["settings"], "sla_minutes")
-            _dict_set_if_not_unset(
-                settings,
-                json["settings"],
-                "fix_scaling_type",
-            )
             _dict_set_if_not_unset(
                 settings,
                 json["settings"],
