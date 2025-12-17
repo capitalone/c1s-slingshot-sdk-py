@@ -24,7 +24,6 @@ class AssignSettingsSchema(TypedDict):
     """Schema for assigning additional project settings in Slingshot."""
 
     sla_minutes: NotRequired[Optional[int]]
-    fix_scaling_type: NotRequired[Optional[bool]]
     auto_apply_recs: NotRequired[Optional[bool]]
     optimize_instance_size: NotRequired[Optional[bool]]
 
@@ -53,7 +52,6 @@ class ProjectSettingsSchema(TypedDict):
     """Schema for retrieving the project additional settings in Slingshot."""
 
     sla_minutes: Optional[int]
-    fix_scaling_type: Optional[bool]
     auto_apply_recs: Optional[bool]
     optimize_instance_size: Optional[bool]
 
@@ -196,7 +194,6 @@ class SettingsSchema(TypedDict):
     """Schema for additional project settings in Slingshot."""
 
     sla_minutes: Optional[int]
-    fix_scaling_type: Optional[bool]
     auto_apply_recs: Optional[bool]
     optimize_instance_size: Optional[bool]
 
