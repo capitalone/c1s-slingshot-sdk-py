@@ -347,6 +347,27 @@ class ProjectAPI:
     def create_project_recommendation(self, project_id: str) -> RecommendationDetailsSchema:
         """Create a new recommendation for a given project.
 
+        Note:
+            The returned value, a dictionary with info about the
+            recommendation, lacks the full details of the recommendation
+            because the state is still "PENDING" immediately after the
+            recommendation is created. Use the method
+            `get_project_recommendation` to retrieve the full details, like
+            this:
+
+            ```python
+            from slingshot import SlingshotClient
+
+            client = SlingshotClient()
+            project_id = "your_project_id"
+            # Create a recommendation
+            recommendation = client.projects.create_project_recommendation(project_id)
+            # Get the recommendation details
+            recommendation_details = client.projects.get_project_recommendation(
+                recommendation_id=recommendation["id"], project_id=project_id
+            )
+            ```
+
         Args:
             project_id (str): The ID of the project to create a recommendation
                 for.
@@ -363,10 +384,6 @@ class ProjectAPI:
                 endpoint=f"/v1/projects/{project_id}/recommendations",
             ),
         )
-        # The value returned lacks the full details of the recommendation
-        # because the state is still "PENDING" immediately after the
-        # recommendation is created. Use the method get_project_recommendation
-        # to retrieve the full details.
         return cast(
             RecommendationDetailsSchema,
             response.get("result"),
