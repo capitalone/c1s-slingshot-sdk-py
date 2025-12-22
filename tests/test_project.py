@@ -114,6 +114,46 @@ def test_update_failure(
     assert exc_info.value.response.json() == mock_error
 
 
+def test_delete_success(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+) -> None:
+    """Test deleting a project successfully."""
+    project_id = "project_id_123"
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}")
+    httpx_mock.add_response(
+        method="DELETE",
+        url=url,
+        # Typically, delete methods return a 204 No Content status code,
+        # but the backend returns a 200 OK status, so we use that here.
+        status_code=200,
+        # The delete method does not return a body, so we use an empty dict
+        json={},
+        headers={"content-type": "application/json"},
+    )
+    assert client.projects.delete(project_id=project_id) is None
+
+
+def test_delete_failure(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+) -> None:
+    """Test deleting a project failure."""
+    project_id = "project_id_123"
+    mock_error = {"error": "Project cannot be deleted"}
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}")
+    httpx_mock.add_response(
+        method="DELETE",
+        url=url,
+        status_code=404,
+        json=mock_error,
+    )
+    with pytest.raises(httpx.HTTPStatusError) as exc_info:
+        client.projects.delete(project_id=project_id)
+    assert exc_info.value.response.status_code == 404
+    assert exc_info.value.response.json() == mock_error
+
+
 @pytest.mark.parametrize("include", [["creator"], [], None])
 def test_get_projects_success(
     httpx_mock: HTTPXMock,
@@ -248,7 +288,7 @@ def test_get_project_success(
 ) -> None:
     """Test fetching a project by its ID."""
     project_id = "project_id_123"
-    mock_response = {"id": "project_id_123"}
+    mock_response = {"result": {"id": "project_id_123"}}
     params = {"include": include} if include else None
     url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}", params=params)
     httpx_mock.add_response(
@@ -430,15 +470,38 @@ def test_apply_project_recommendation_success(
     """Test applying a project recommendation successfully."""
     project_id = "project_id_123"
     recommendation_id = "recommendation_123"
-    mock_response = {"result": "Recommendation applied"}
+    mock_response = {
+        "result": {
+            "created_at": "sometime in the recent past, but not now",
+            "updated_at": "later from then in the near future, but not now",
+            "id": recommendation_id,
+            "state": "SUCCESS",
+            "recommendation": {
+                "configuration": {
+                    "param1": "value1",
+                }
+            },
+        }
+    }
     url = httpx.URL(
         url=(
             f"{client._api_url}/v1/projects/{project_id}/recommendations/{recommendation_id}/apply"
         )
     )
+    # The apply_project_recommendation method also fetches the recommendation
+    # after applying it, so we need to mock that as well.
+    url_get_project_recommendation = httpx.URL(
+        url=(f"{client._api_url}/v1/projects/{project_id}/recommendations/{recommendation_id}")
+    )
     httpx_mock.add_response(
         method="POST",
         url=url,
+        status_code=200,
+        json=mock_response,
+    )
+    httpx_mock.add_response(
+        method="GET",
+        url=url_get_project_recommendation,
         status_code=200,
         json=mock_response,
     )

@@ -205,6 +205,20 @@ class ProjectAPI:
             response.get("result"),
         )
 
+    def delete(self, project_id: str) -> None:
+        """Delete a project by its ID.
+
+        This method removes the Slingshot project but does not affect the
+        Databricks job that was associated with the project.
+
+        Args:
+            project_id (str): The ID of the project to delete.
+
+        Returns:
+            None
+        """
+        self.client._api_request(method="DELETE", endpoint=f"/v1/projects/{project_id}")
+
     def get_projects(
         self,
         include: Optional[list[str]] = None,
@@ -322,10 +336,13 @@ class ProjectAPI:
         params: QueryParams = {}
         if include:
             params["include"] = include
-        response = self.client._api_request(
-            method="GET", endpoint=f"/v1/projects/{project_id}", params=params
+        response = cast(
+            dict[str, Any],
+            self.client._api_request(
+                method="GET", endpoint=f"/v1/projects/{project_id}", params=params
+            ),
         )
-        return cast(ProjectSchema, response)
+        return cast(ProjectSchema, response.get("result"))
 
     def create_project_recommendation(self, project_id: str) -> RecommendationDetailsSchema:
         """Create a new recommendation for a given project.
@@ -346,7 +363,10 @@ class ProjectAPI:
                 endpoint=f"/v1/projects/{project_id}/recommendations",
             ),
         )
-
+        # The value returned lacks the full details of the recommendation
+        # because the state is still "PENDING" immediately after the
+        # recommendation is created. Use the method get_project_recommendation
+        # to retrieve the full details.
         return cast(
             RecommendationDetailsSchema,
             response.get("result"),
@@ -386,7 +406,7 @@ class ProjectAPI:
         self,
         recommendation_id: str,
         project_id: str,
-    ) -> str:
+    ) -> RecommendationDetailsSchema:
         """Apply a recommendation to the Slingshot project.
 
         The recommendation is applied to the Databricks job associated
@@ -398,21 +418,21 @@ class ProjectAPI:
                 belongs to.
 
         Returns:
-            str: The message received from the Slingshot API after applying
-                the recommendation.
+            RecommendationDetailsSchema: The details of the recommendation
+                that was applied.
 
         """
-        response = cast(
-            dict[str, Any],
-            self.client._api_request(
-                method="POST",
-                endpoint=f"/v1/projects/{project_id}/recommendations/{recommendation_id}/apply",
-            ),
+        # Apply the recommendation to the project. This raises an error if
+        # unsuccessful.
+        self.client._api_request(
+            method="POST",
+            endpoint=f"/v1/projects/{project_id}/recommendations/{recommendation_id}/apply",
         )
 
-        return cast(
-            str,
-            response.get("result"),
+        # Retrieve the recommendation after successful application
+        return self.get_project_recommendation(
+            recommendation_id=recommendation_id,
+            project_id=project_id,
         )
 
     def reset_project(self, project_id: str) -> None:
