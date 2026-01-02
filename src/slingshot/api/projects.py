@@ -61,8 +61,6 @@ class ProjectAPI:
         Args:
             name (str): The name of the project.
             workspaceId (str): The workspace ID.
-            settings (ProjectAdditionalSettingsSchema): A object for
-            additional settings.
             app_id (Optional[str], optional): The application ID.
             cluster_path (Optional[str], optional): The path to the cluster.
             job_id (Optional[str], optional): The job ID.
@@ -70,9 +68,10 @@ class ProjectAPI:
             description (Optional[str], optional): A description for the project.
             cluster_log_url (Optional[str], optional): The URL for cluster logs.
             settings (AssignSettingsSchema, optional): An object that specifies options.
-                sla_minutes (Optional[int], optional): Option to set the SLA minutes.
-                auto_apply_recs (Optional[bool], optional): Option to auto apply recommendations.
-                optimize_instance_size (Optional[bool], optional): Option to optimize the instance size.
+
+                - sla_minutes (Optional[int], optional): Option to set the SLA minutes.
+                - auto_apply_recs (Optional[bool], optional): Option to auto apply recommendations.
+                - optimize_instance_size (Optional[bool], optional): Option to optimize the instance size.
 
         Returns:
             ProjectSchema: The details of the newly created project.
@@ -147,12 +146,13 @@ class ProjectAPI:
             workspaceId (Optional[str], optional): The new workspace ID.
             subscriptionId (Optional[str], optional): The new subscription ID.
             description (Optional[str], optional): The new description for the
-            project.
+                project.
             cluster_log_url (Optional[str], optional): The new URL for cluster logs.
             settings (AssignSettingsSchema, optional): An object that specifies options.
-                sla_minutes (Optional[int], optional): Option to set the SLA minutes.
-                auto_apply_recs (Optional[bool], optional): Option to auto apply recommendations.
-                optimize_instance_size (Optional[bool], optional): Option to optimize the instance size.
+
+                - sla_minutes (Optional[int], optional): Option to set the SLA minutes.
+                - auto_apply_recs (Optional[bool], optional): Option to auto apply recommendations.
+                - optimize_instance_size (Optional[bool], optional): Option to optimize the instance size.
 
         Returns:
             ProjectSchema: The details of the updated project.
@@ -231,17 +231,17 @@ class ProjectAPI:
         """Retrieve a paginated list of projects based on filter criteria.
 
         Args:
-            include (Optional[list[str]]): Specifies related resources to include the
-            response.
+            include (Optional[list[str]]): Specifies related resources to
+                include in the response.
             creator_id (Optional[str], optional): The ID of the creator to
-            filter projects by. Defaults to None.
+                filter projects by. Defaults to None.
             app_id (Optional[str], optional): The application ID to filter
-            projects by. Defaults to None.
+                projects by. Defaults to None.
             job_id (Optional[str], optional): The job ID to filter projects by.
-            Defaults to None.
+                Defaults to None.
             page (int, optional): The page number to retrieve. Defaults to 1.
             size (int, optional): The number of projects to retrieve per page.
-            Defaults to 50.
+                Defaults to 50.
 
         Returns:
             Page[ProjectSchema]: A list of project details for the requested
@@ -282,18 +282,18 @@ class ProjectAPI:
         """A memory-efficient generator that fetches all projects page by page.
 
         Args:
-            include (Optional[list[]]): Specifies related resources to include the
-            response.
+            include (Optional[list[]]): Specifies related resources to include
+                in the response.
             creator_id (Optional[str], optional): The ID of the creator to
-            filter projects by. Defaults to None.
+                filter projects by. Defaults to None.
             app_id (Optional[str], optional): The application ID to filter
-            projects by. Defaults to None.
+                projects by. Defaults to None.
             job_id (Optional[str], optional): The job ID to filter projects by.
-            Defaults to None.
+                Defaults to None.
             size (int, optional): The number of projects to retrieve per page.
-            Defaults to 50.
+                Defaults to 50.
             max_pages (int, optional): The maximum number of pages allowed to
-            traverse. Defaults to 1000.
+                traverse. Defaults to 1000.
 
         Yields:
             Iterator[ProjectSchema]: A project object, one at a time.
@@ -326,8 +326,8 @@ class ProjectAPI:
 
         Args:
             project_id (str): The ID of the project to fetch.
-            include (Optional[list[str]]): Specifies related resources to include the
-            response.
+            include (Optional[list[str]]): Specifies related resources to
+                include in the response.
 
         Returns:
             ProjectSchema: The project details.
@@ -352,21 +352,19 @@ class ProjectAPI:
             recommendation, lacks the full details of the recommendation
             because the state is still "PENDING" immediately after the
             recommendation is created. Use the method
-            `get_project_recommendation` to retrieve the full details, like
+            :meth:`get_project_recommendation` to retrieve the full details, like
             this:
 
-            ```python
-            from slingshot import SlingshotClient
+            >>> from slingshot import SlingshotClient
 
-            client = SlingshotClient()
-            project_id = "your_project_id"
-            # Create a recommendation
-            recommendation = client.projects.create_project_recommendation(project_id)
-            # Get the recommendation details
-            recommendation_details = client.projects.get_project_recommendation(
-                recommendation_id=recommendation["id"], project_id=project_id
-            )
-            ```
+            >>> client = SlingshotClient()
+            >>> project_id = "your_project_id"
+            >>> # Create a recommendation
+            >>> recommendation = client.projects.create_project_recommendation(project_id)
+            >>> # Get the recommendation details
+            >>> recommendation_details = client.projects.get_project_recommendation(
+            >>>     recommendation_id=recommendation["id"], project_id=project_id
+            >>> )
 
         Args:
             project_id (str): The ID of the project to create a recommendation
@@ -374,7 +372,7 @@ class ProjectAPI:
 
         Returns:
             RecommendationDetailsSchema: The recommendation creation status
-                object.
+            object.
 
         """
         response = cast(
@@ -436,7 +434,7 @@ class ProjectAPI:
 
         Returns:
             RecommendationDetailsSchema: The details of the recommendation
-                that was applied.
+            that was applied.
 
         """
         # Apply the recommendation to the project. This raises an error if
