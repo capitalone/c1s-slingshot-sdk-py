@@ -266,18 +266,24 @@ mock_project_response: ProjectSchema = {
     "create_args, expected_payload",
     [
         (
-            {"name": "Simple Project", "workspaceId": "12345678901234"},
+            {"name": "Simple Project", "workspace_id": "12345678901234"},
+            # The Slingshot API expects camelCase for the workspace_id key,
+            # so the projects.create and projects.update methods convert the
+            # workspace_id key to workspaceId when sending the request, but
+            # keep those parameters in snake_case in the method signatures for
+            # consistency with the rest of the SDK and Python conventions.
             {"name": "Simple Project", "workspaceId": "12345678901234"},
         ),
         (
             {
                 "name": "Complex Project",
-                "workspaceId": "12345678901234",
+                "workspace_id": "12345678901234",
                 "app_id": "app_123",
                 "description": "A test.",
             },
             {
                 "name": "Complex Project",
+                # See note above on the workspaceId key.
                 "workspaceId": "12345678901234",
                 "app_id": "app_123",
                 "description": "A test.",
@@ -286,11 +292,12 @@ mock_project_response: ProjectSchema = {
         (
             {
                 "name": "Project With Settings",
-                "workspaceId": "12345678901234",
+                "workspace_id": "12345678901234",
                 "settings": {"sla_minutes": 120},
             },
             {
                 "name": "Project With Settings",
+                # See note above on the workspaceId key.
                 "workspaceId": "12345678901234",
                 "settings": {"sla_minutes": 120},
             },

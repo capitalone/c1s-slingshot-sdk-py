@@ -70,6 +70,8 @@ class SlingshotClient:
 
         Example:
             >>> from slingshot.client import SlingshotClient
+            >>> # Or:
+            >>> # from slingshot import SlingshotClient
             >>> client = SlingshotClient(api_key="your_api_key")
 
         """

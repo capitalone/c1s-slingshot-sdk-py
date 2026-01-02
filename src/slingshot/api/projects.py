@@ -45,11 +45,11 @@ class ProjectAPI:
     def create(
         self,
         name: str,
-        workspaceId: str,
+        workspace_id: str,
         app_id: Optional[str] = UNSET,
         cluster_path: Optional[str] = UNSET,
         job_id: Optional[str] = UNSET,
-        subscriptionId: Optional[str] = UNSET,
+        subscription_id: Optional[str] = UNSET,
         description: Optional[str] = UNSET,
         cluster_log_url: Optional[str] = UNSET,
         settings: Optional[AssignSettingsSchema] = UNSET,
@@ -60,11 +60,11 @@ class ProjectAPI:
 
         Args:
             name (str): The name of the project.
-            workspaceId (str): The workspace ID.
+            workspace_id (str): The workspace ID.
             app_id (Optional[str], optional): The application ID.
             cluster_path (Optional[str], optional): The path to the cluster.
             job_id (Optional[str], optional): The job ID.
-            subscriptionId (Optional[str], optional): The subscription ID.
+            subscription_id (Optional[str], optional): The subscription ID.
             description (Optional[str], optional): A description for the project.
             cluster_log_url (Optional[str], optional): The URL for cluster logs.
             settings (AssignSettingsSchema, optional): An object that specifies options.
@@ -77,7 +77,9 @@ class ProjectAPI:
             ProjectSchema: The details of the newly created project.
 
         """
-        json: JSON_TYPE = {"name": name, "workspaceId": workspaceId}
+        # The Slingshot API expects "workspaceId" and "subscriptionId"
+        # to be in camelCase, the rest of the keys are in snake_case.
+        json: JSON_TYPE = {"name": name, "workspaceId": workspace_id}
 
         if app_id is not UNSET:
             json["app_id"] = app_id
@@ -85,8 +87,8 @@ class ProjectAPI:
             json["cluster_path"] = cluster_path
         if job_id is not UNSET:
             json["job_id"] = job_id
-        if subscriptionId is not UNSET:
-            json["subscriptionId"] = subscriptionId
+        if subscription_id is not UNSET:
+            json["subscriptionId"] = subscription_id
         if description is not UNSET:
             json["description"] = description
         if cluster_log_url is not UNSET:
@@ -126,10 +128,10 @@ class ProjectAPI:
         self,
         project_id: str,
         name: Optional[str] = UNSET,
+        workspace_id: Optional[str] = UNSET,
         cluster_path: Optional[str] = UNSET,
         job_id: Optional[str] = UNSET,
-        workspaceId: Optional[str] = UNSET,
-        subscriptionId: Optional[str] = UNSET,
+        subscription_id: Optional[str] = UNSET,
         description: Optional[str] = UNSET,
         cluster_log_url: Optional[str] = UNSET,
         settings: Optional[AssignSettingsSchema] = UNSET,
@@ -141,10 +143,10 @@ class ProjectAPI:
         Args:
             project_id (str): The ID of the project to update.
             name (Optional[str], optional): The new name for the project.
+            workspace_id (Optional[str], optional): The new workspace ID.
             cluster_path (Optional[str], optional): The new path to the cluster.
             job_id (Optional[str], optional): The new job ID.
-            workspaceId (Optional[str], optional): The new workspace ID.
-            subscriptionId (Optional[str], optional): The new subscription ID.
+            subscription_id (Optional[str], optional): The new subscription ID.
             description (Optional[str], optional): The new description for the
                 project.
             cluster_log_url (Optional[str], optional): The new URL for cluster logs.
@@ -166,10 +168,12 @@ class ProjectAPI:
             json["cluster_path"] = cluster_path
         if job_id is not UNSET:
             json["job_id"] = job_id
-        if workspaceId is not UNSET:
-            json["workspaceId"] = workspaceId
-        if subscriptionId is not UNSET:
-            json["subscriptionId"] = subscriptionId
+        # The Slingshot API expects "workspaceId" and "subscriptionId"
+        # to be in camelCase, the rest of the keys are in snake_case.
+        if workspace_id is not UNSET:
+            json["workspaceId"] = workspace_id
+        if subscription_id is not UNSET:
+            json["subscriptionId"] = subscription_id
         if description is not UNSET:
             json["description"] = description
         if cluster_log_url is not UNSET:
@@ -218,6 +222,7 @@ class ProjectAPI:
             None
         """
         self.client._api_request(method="DELETE", endpoint=f"/v1/projects/{project_id}")
+        return None
 
     def get_projects(
         self,
@@ -363,7 +368,7 @@ class ProjectAPI:
             >>> recommendation = client.projects.create_project_recommendation(project_id)
             >>> # Get the recommendation details
             >>> recommendation_details = client.projects.get_project_recommendation(
-            >>>     recommendation_id=recommendation["id"], project_id=project_id
+            >>>     project_id=project_id, recommendation_id=recommendation["id"]
             >>> )
 
         Args:
@@ -389,15 +394,15 @@ class ProjectAPI:
 
     def get_project_recommendation(
         self,
-        recommendation_id: str,
         project_id: str,
+        recommendation_id: str,
     ) -> RecommendationDetailsSchema:
         """Fetch a specific recommendation for a project.
 
         Args:
-            recommendation_id (str): The ID of the recommendation to fetch.
             project_id (str): The ID of the project that the recommendation
                 belongs to.
+            recommendation_id (str): The ID of the recommendation to fetch.
 
         Returns:
             RecommendationDetailsSchema: The details of the specific
@@ -419,8 +424,8 @@ class ProjectAPI:
 
     def apply_project_recommendation(
         self,
-        recommendation_id: str,
         project_id: str,
+        recommendation_id: str,
     ) -> RecommendationDetailsSchema:
         """Apply a recommendation to the Slingshot project.
 
@@ -428,9 +433,9 @@ class ProjectAPI:
         with the Slingshot project.
 
         Args:
-            recommendation_id (str): The ID of the recommendation to fetch.
             project_id (str): The ID of the project that the recommendation
                 belongs to.
+            recommendation_id (str): The ID of the recommendation to fetch.
 
         Returns:
             RecommendationDetailsSchema: The details of the recommendation
@@ -446,8 +451,8 @@ class ProjectAPI:
 
         # Retrieve the recommendation after successful application
         return self.get_project_recommendation(
-            recommendation_id=recommendation_id,
             project_id=project_id,
+            recommendation_id=recommendation_id,
         )
 
     def reset_project(self, project_id: str) -> None:
@@ -460,3 +465,4 @@ class ProjectAPI:
             None
         """
         self.client._api_request(method="POST", endpoint=f"/v1/projects/{project_id}/reset")
+        return None
