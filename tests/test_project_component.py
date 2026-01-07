@@ -61,21 +61,25 @@ creator_admin: ProjectCreatorSchema = {
 settings_alpha: ProjectSettingsSchema = {
     "sla_minutes": 60,
     "auto_apply_recs": True,
+    "fix_scaling_type": False,
     "optimize_instance_size": True,
 }
 settings_beta: ProjectSettingsSchema = {
     "sla_minutes": None,
     "auto_apply_recs": False,
+    "fix_scaling_type": None,
     "optimize_instance_size": True,
 }
 settings_delta: ProjectSettingsSchema = {
     "sla_minutes": 240,
     "auto_apply_recs": False,
+    "fix_scaling_type": False,
     "optimize_instance_size": False,
 }
 settings_epsilon: ProjectSettingsSchema = {
     "sla_minutes": None,
     "auto_apply_recs": True,
+    "fix_scaling_type": True,
     "optimize_instance_size": None,
 }
 
