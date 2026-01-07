@@ -85,6 +85,10 @@ class SlingshotClient:
 
         self._api_url = api_url or os.getenv("SLINGSHOT_API_URL") or DEFAULT_API_URL
 
+    def __repr__(self):
+        """Return a string representation of the SlingshotClient."""
+        return f'SlingshotClient(api_url="{self._api_url}", api_key="***")'
+
     @backoff.on_exception(
         backoff.expo,
         httpx.HTTPStatusError,

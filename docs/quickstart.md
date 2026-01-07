@@ -49,7 +49,7 @@ from slingshot import SlingshotClient
 # Initialize the client
 client = SlingshotClient()
 
-# List all projects
+# List all Slingshot projects
 all_projects = []
 for project in client.projects.iterate_projects(include=[]):
     all_projects.append(project)
@@ -59,9 +59,24 @@ print(f"Found {len(all_projects)} projects.")
 project = client.projects.get_project(project_id="project-id", include=["name"])
 print(f"Project: {project['name']}")
 
-# Create a new project
+# Create a new project and link it to a Databricks job compute cluster
 new_project = client.projects.create(
-    name="My New Project"
+    name="My New Project",
+    workspace_id="databricks-workspace-id",
+    job_id="databricks-job-id",
+    cluster_name="job-compute-cluster-name-in-databricks-job",
+)
+
+# Create a recommendation (available once Slingshot has received data for
+# a successful Databricks job run that completed after the project was created)
+recommendation = client.projects.create_recommendation(
+    project_id=new_project["id"],
+)
+
+# Apply the recommendation to the Databricks job compute cluster
+applied_recommendation = client.projects.apply_recommendation(
+    project_id=new_project["id"],
+    recommendation_id=recommendation["id"],
 )
 ```
 

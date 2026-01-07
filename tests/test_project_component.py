@@ -9,11 +9,11 @@ from pytest_httpx import HTTPXMock
 
 from slingshot.client import SlingshotClient
 from slingshot.types import (
+    AssignSettingsSchema,
     Page,
     ProjectCreatorSchema,
     ProjectMetricsSchema,
     ProjectSchema,
-    ProjectSettingsSchema,
     RecommendationDetailsSchema,
 )
 
@@ -58,23 +58,27 @@ creator_admin: ProjectCreatorSchema = {
     "updatedAt": "2023-11-01T00:00:00Z",
 }
 
-settings_alpha: ProjectSettingsSchema = {
+settings_alpha: AssignSettingsSchema = {
     "sla_minutes": 60,
+    "fix_scaling_type": False,
     "auto_apply_recs": True,
     "optimize_instance_size": True,
 }
-settings_beta: ProjectSettingsSchema = {
+settings_beta: AssignSettingsSchema = {
     "sla_minutes": None,
+    "fix_scaling_type": None,
     "auto_apply_recs": False,
     "optimize_instance_size": True,
 }
-settings_delta: ProjectSettingsSchema = {
+settings_delta: AssignSettingsSchema = {
     "sla_minutes": 240,
+    "fix_scaling_type": False,
     "auto_apply_recs": False,
     "optimize_instance_size": False,
 }
-settings_epsilon: ProjectSettingsSchema = {
+settings_epsilon: AssignSettingsSchema = {
     "sla_minutes": None,
+    "fix_scaling_type": True,
     "auto_apply_recs": True,
     "optimize_instance_size": None,
 }
@@ -441,7 +445,7 @@ def test_create_project_recommendation(httpx_mock: HTTPXMock, client: SlingshotC
         status_code=202,
     )
 
-    result = client.projects.create_project_recommendation(project_id=project_id)
+    result = client.projects.create_recommendation(project_id=project_id)
     assert result == expected_response
 
 
@@ -465,7 +469,7 @@ def test_get_project_recommendation(httpx_mock: HTTPXMock, client: SlingshotClie
         status_code=200,
     )
 
-    result = client.projects.get_project_recommendation(
+    result = client.projects.get_recommendation(
         project_id=project_id, recommendation_id=recommendation_id
     )
     assert result == expected_response

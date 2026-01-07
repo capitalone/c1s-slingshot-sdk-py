@@ -154,6 +154,39 @@ def test_delete_failure(
     assert exc_info.value.response.json() == mock_error
 
 
+def test_reset_success(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+) -> None:
+    """Test resetting a project by its ID."""
+    project_id = "project_id_123"
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}/reset")
+    httpx_mock.add_response(
+        method="POST",
+        url=url,
+        status_code=204,
+        headers={"content-type": "application/json"},
+    )
+    assert client.projects.reset(project_id=project_id) is None
+
+
+def test_reset_missing(
+    httpx_mock: HTTPXMock,
+    client: SlingshotClient,
+) -> None:
+    """Test 404 error handling when resetting a project."""
+    project_id = "project_id_123"
+    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}/reset")
+    httpx_mock.add_response(
+        method="POST",
+        url=url,
+        status_code=404,
+    )
+    with pytest.raises(httpx.HTTPStatusError) as exc_info:
+        client.projects.reset(project_id=project_id)
+    assert exc_info.value.response.status_code == 404
+
+
 @pytest.mark.parametrize("include", [["creator"], [], None])
 def test_get_projects_success(
     httpx_mock: HTTPXMock,
@@ -322,7 +355,7 @@ def test_get_project_missing(
     assert exc_info.value.response.json() == mock_error
 
 
-def test_create_project_recommendation_success(
+def test_create_recommendation_success(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
 ) -> None:
@@ -344,13 +377,13 @@ def test_create_project_recommendation_success(
         status_code=200,
         json=mock_response,
     )
-    recommendation = client.projects.create_project_recommendation(
+    recommendation = client.projects.create_recommendation(
         project_id=project_id,
     )
     assert recommendation == mock_response["result"]
 
 
-def test_create_project_recommendation_failure(
+def test_create_recommendation_failure(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
 ) -> None:
@@ -367,14 +400,14 @@ def test_create_project_recommendation_failure(
         json=mock_error,
     )
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
-        client.projects.create_project_recommendation(
+        client.projects.create_recommendation(
             project_id=project_id,
         )
     assert exc_info.value.response.status_code == 404
     assert exc_info.value.response.json() == mock_error
 
 
-def test_get_project_recommendation_success(
+def test_get_recommendation_success(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
 ) -> None:
@@ -397,14 +430,14 @@ def test_get_project_recommendation_success(
         status_code=200,
         json=mock_response,
     )
-    recommendation = client.projects.get_project_recommendation(
+    recommendation = client.projects.get_recommendation(
         recommendation_id=recommendation_id,
         project_id=project_id,
     )
     assert recommendation == mock_response["result"]
 
 
-def test_get_project_recommendation_failure(
+def test_get_recommendation_failure(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
 ) -> None:
@@ -422,7 +455,7 @@ def test_get_project_recommendation_failure(
         json=mock_error,
     )
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
-        client.projects.get_project_recommendation(
+        client.projects.get_recommendation(
             recommendation_id=recommendation_id,
             project_id=project_id,
         )
@@ -430,40 +463,7 @@ def test_get_project_recommendation_failure(
     assert exc_info.value.response.json() == mock_error
 
 
-def test_reset_project_success(
-    httpx_mock: HTTPXMock,
-    client: SlingshotClient,
-) -> None:
-    """Test resetting a project by its ID."""
-    project_id = "project_id_123"
-    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}/reset")
-    httpx_mock.add_response(
-        method="POST",
-        url=url,
-        status_code=204,
-        headers={"content-type": "application/json"},
-    )
-    assert client.projects.reset_project(project_id=project_id) is None
-
-
-def test_reset_project_missing(
-    httpx_mock: HTTPXMock,
-    client: SlingshotClient,
-) -> None:
-    """Test 404 error handling when resetting a project."""
-    project_id = "project_id_123"
-    url = httpx.URL(url=f"{client._api_url}/v1/projects/{project_id}/reset")
-    httpx_mock.add_response(
-        method="POST",
-        url=url,
-        status_code=404,
-    )
-    with pytest.raises(httpx.HTTPStatusError) as exc_info:
-        client.projects.reset_project(project_id=project_id)
-    assert exc_info.value.response.status_code == 404
-
-
-def test_apply_project_recommendation_success(
+def test_apply_recommendation_success(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
 ) -> None:
@@ -488,9 +488,9 @@ def test_apply_project_recommendation_success(
             f"{client._api_url}/v1/projects/{project_id}/recommendations/{recommendation_id}/apply"
         )
     )
-    # The apply_project_recommendation method also fetches the recommendation
+    # The apply_recommendation method also fetches the recommendation
     # after applying it, so we need to mock that as well.
-    url_get_project_recommendation = httpx.URL(
+    url_get_recommendation = httpx.URL(
         url=(f"{client._api_url}/v1/projects/{project_id}/recommendations/{recommendation_id}")
     )
     httpx_mock.add_response(
@@ -501,11 +501,11 @@ def test_apply_project_recommendation_success(
     )
     httpx_mock.add_response(
         method="GET",
-        url=url_get_project_recommendation,
+        url=url_get_recommendation,
         status_code=200,
         json=mock_response,
     )
-    message = client.projects.apply_project_recommendation(
+    message = client.projects.apply_recommendation(
         recommendation_id=recommendation_id,
         project_id=project_id,
     )
@@ -534,7 +534,7 @@ def test_apply_project_recommendation_success(
         (503, "project_id_123", {"error": "No rows found when one was expected"}),
     ],
 )
-def test_apply_project_recommendation_failure(
+def test_apply_recommendation_failure(
     httpx_mock: HTTPXMock,
     client: SlingshotClient,
     status_code: int,
@@ -555,7 +555,7 @@ def test_apply_project_recommendation_failure(
         json=mock_error,
     )
     with pytest.raises(httpx.HTTPStatusError) as exc_info:
-        client.projects.apply_project_recommendation(
+        client.projects.apply_recommendation(
             recommendation_id=recommendation_id,
             project_id=project_id,
         )
