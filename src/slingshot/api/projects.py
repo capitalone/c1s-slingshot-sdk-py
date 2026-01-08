@@ -49,7 +49,7 @@ class ProjectAPI:
         description: Optional[str] = UNSET,
         app_id: Optional[str] = UNSET,
         job_id: Optional[str] = UNSET,
-        cluster_name: Optional[str] = UNSET,
+        cluster_path: Optional[str] = UNSET,
         settings: Optional[AssignSettingsSchema] = UNSET,
     ) -> ProjectSchema:
         """Create a new Slingshot project for optimizing a Databricks job cluster.
@@ -67,7 +67,7 @@ class ProjectAPI:
                 once the project is created. Defaults to None.
             job_id (Optional[str], optional): The Databricks job ID that will
                 be associated with this Slingshot project. Defaults to None.
-            cluster_name (Optional[str], optional): The name of the Databricks
+            cluster_path (Optional[str], optional): The name of the Databricks
                 job cluster to be optimized by this Slingshot project, prefixed
                 with "job_clusters/" for a job cluster that is available to any
                 task in the job; or the task name prefixed with "tasks/" for a
@@ -78,7 +78,7 @@ class ProjectAPI:
                 field is optional. Defaults to None.
 
                 Each Slingshot project is linked to a single compute cluster in
-                Databricks. If the `cluster_name` is not provided for a job
+                Databricks. If the `cluster_path` is not provided for a job
                 that has multiple compute clusters, the Slingshot project will
                 not be able to retrieve information about the job runs nor
                 generate recommendations for optimizing the compute cluster.
@@ -94,7 +94,7 @@ class ProjectAPI:
                 it is called "task_key".
 
                 With the Databricks Python SDK, you can retrieve the
-                `cluster_name` using the `job_cluster_key` or `task_key` from
+                `cluster_path` using the `job_cluster_key` or `task_key` from
                 the job or task settings. For example, to get the
                 :class:`~databricks.sdk.service.jobs.Job` object and extract the
                 `job_cluster_key` or `task_key`, you can use the following code:
@@ -109,22 +109,22 @@ class ProjectAPI:
                 `job_cluster_key` like this:
 
                 >>> cluster_name = job.settings.job_clusters[0].job_cluster_key
-                >>> print(f'cluster_name="job_clusters/{cluster_name}"')
+                >>> print(f'cluster_path="job_clusters/{cluster_name}"')
 
                 Or, if the job cluster definition is tied to a specific
                 task rather than shared across the entire job, you can first
                 check whether the task is using a shared cluster, and if not,
-                use the `task_key` as the `cluster_name`. When jobs are created
+                use the `task_key` as the `cluster_path`. When jobs are created
                 with the Databricks API or SDK, tasks can be configured to use
                 a `new_cluster` that is not shared with other tasks, in which
                 case the `job_cluster_key` will not be set, and you should use
                 the `task_key` instead:
 
                 >>> if (cluster_name := job.settings.tasks[0].job_cluster_key):
-                >>>     print(f'cluster_name="job_clusters/{cluster_name}"')
+                >>>     print(f'cluster_path="job_clusters/{cluster_name}"')
                 >>> else:
-                >>>     cluster_name = job.settings.tasks[0].task_key
-                >>>     print(f'cluster_name="tasks/{cluster_name}"')
+                >>>     task_name = job.settings.tasks[0].task_key
+                >>>     print(f'cluster_path="tasks/{task_name}"')
 
                 See also:
 
@@ -172,11 +172,10 @@ class ProjectAPI:
 
         if app_id is not UNSET:
             json["app_id"] = app_id
-        # The Slingshot API calls cluster_name "cluster_path". It is the name
-        # of a job cluster prefixed by "job_clusters/" or the name of a task
-        # prefixed by "tasks/".
-        if cluster_name is not UNSET:
-            json["cluster_path"] = cluster_name
+        # cluster_path is the name of a job cluster prefixed by
+        # "job_clusters/" or the name of a task prefixed by "tasks/".
+        if cluster_path is not UNSET:
+            json["cluster_path"] = cluster_path
         if job_id is not UNSET:
             json["job_id"] = job_id
         if description is not UNSET:
@@ -215,7 +214,7 @@ class ProjectAPI:
         workspace_id: Optional[str] = UNSET,
         description: Optional[str] = UNSET,
         job_id: Optional[str] = UNSET,
-        cluster_name: Optional[str] = UNSET,
+        cluster_path: Optional[str] = UNSET,
         settings: Optional[AssignSettingsSchema] = UNSET,
     ) -> ProjectSchema:
         """Update the attributes of an existing Slingshot project.
@@ -246,7 +245,7 @@ class ProjectAPI:
                 using the :meth:`reset` method. This will remove all previous
                 job run data from the project, allowing Slingshot to re-optimize
                 the job without the influence of previous runs.
-            cluster_name (Optional[str], optional): The name of the Databricks
+            cluster_path (Optional[str], optional): The name of the Databricks
                 job cluster to be optimized by this Slingshot project, prefixed
                 with "job_clusters/" for a job cluster that is available to any
                 task in the job; or the task name prefixed with "tasks/" for a
@@ -257,7 +256,7 @@ class ProjectAPI:
                 field is optional.
 
                 Each Slingshot project is linked to a single compute cluster in
-                Databricks. If the `cluster_name` is not provided for a job
+                Databricks. If the `cluster_path` is not provided for a job
                 that has multiple compute clusters, the Slingshot project will
                 not be able to retrieve information about the job runs nor
                 generate recommendations for optimizing the compute cluster.
@@ -273,7 +272,7 @@ class ProjectAPI:
                 it is called "task_key".
 
                 With the Databricks Python SDK, you can retrieve the
-                `cluster_name` using the `job_cluster_key` or `task_key` from
+                `cluster_path` using the `job_cluster_key` or `task_key` from
                 the job or task settings. For example, to get the
                 :class:`~databricks.sdk.service.jobs.Job` object and extract the
                 `job_cluster_key` or `task_key`, you can use the following code:
@@ -288,22 +287,22 @@ class ProjectAPI:
                 `job_cluster_key` like this:
 
                 >>> cluster_name = job.settings.job_clusters[0].job_cluster_key
-                >>> print(f'cluster_name="job_clusters/{cluster_name}"')
+                >>> print(f'cluster_path="job_clusters/{cluster_name}"')
 
                 Or, if the job cluster definition is tied to a specific
                 task rather than shared across the entire job, you can first
                 check whether the task is using a shared cluster, and if not,
-                use the `task_key` as the `cluster_name`. When jobs are created
+                use the `task_key` as the `cluster_path`. When jobs are created
                 with the Databricks API or SDK, tasks can be configured to use
                 a `new_cluster` that is not shared with other tasks, in which
                 case the `job_cluster_key` will not be set, and you should use
                 the `task_key` instead:
 
                 >>> if (cluster_name := job.settings.tasks[0].job_cluster_key):
-                >>>     print(f'cluster_name="job_clusters/{cluster_name}"')
+                >>>     print(f'cluster_path="job_clusters/{cluster_name}"')
                 >>> else:
-                >>>     cluster_name = job.settings.tasks[0].task_key
-                >>>     print(f'cluster_name="tasks/{cluster_name}"')
+                >>>     task_name = job.settings.tasks[0].task_key
+                >>>     print(f'cluster_path="tasks/{task_name}"')
 
                 See also:
 
@@ -346,11 +345,10 @@ class ProjectAPI:
 
         if name is not UNSET:
             json["name"] = name
-        # The Slingshot API calls this "cluster_path". It is the name of
-        # a job cluster prefixed by "job_clusters/" or the name of a task
-        # prefixed by "tasks/".
-        if cluster_name is not UNSET:
-            json["cluster_path"] = cluster_name
+        # cluster_path is the name of a job cluster prefixed by
+        # "job_clusters/" or the name of a task prefixed by "tasks/".
+        if cluster_path is not UNSET:
+            json["cluster_path"] = cluster_path
         if job_id is not UNSET:
             json["job_id"] = job_id
         # The Slingshot API expects "workspaceId" to be in camelCase, the
@@ -534,8 +532,9 @@ class ProjectAPI:
 
         Args:
             project_id (str): The ID of the project to fetch.
-            include (Optional[list[str]]): Specifies related resources to
-                include in the response.
+            include (Optional[list[str]]): Attributes within :class:`ProjectSchema`
+                to include in the response. If not provided, all available
+                attributes are included. Defaults to None.
 
         Returns:
             ProjectSchema: The project details.
@@ -553,7 +552,21 @@ class ProjectAPI:
         return cast(ProjectSchema, response.get("result"))
 
     def create_recommendation(self, project_id: str) -> RecommendationDetailsSchema:
-        """Create a new recommendation for a given project.
+        """Create a new recommendation for a Slingshot project.
+
+        Recommendations are suggested changes to Databricks job cluster
+        configurations meant to minimize costs while keeping job run time
+        within required SLAs. They are generated based on the previous job runs
+        associated with the Slingshot project.
+
+        A recommendation can be created for a project once Slingshot has
+        received details about a successful job run associated with that
+        project. Slingshot will begin checking for job runs after a project is
+        linked to a Databricks job (or a cluster within that job).
+
+        The recommendation will be in a "PENDING" state immediately after
+        creation, meaning it is still being processed. It can be applied once
+        its state is "SUCCESS".
 
         Note:
             The returned value, a dictionary with info about the
@@ -579,8 +592,12 @@ class ProjectAPI:
                 for.
 
         Returns:
-            RecommendationDetailsSchema: The recommendation creation status
-            object.
+            RecommendationDetailsSchema: A dictionary with details about the
+            recommendation that was created. The recommendation will have a
+            "PENDING" state, meaning it is still being processed. To get the
+            full details of the recommendation, use the
+            :meth:`get_recommendation` method with the recommendation ID
+            returned in the response.
 
         """
         response = cast(
@@ -600,7 +617,12 @@ class ProjectAPI:
         project_id: str,
         recommendation_id: str,
     ) -> RecommendationDetailsSchema:
-        """Fetch a specific recommendation for a project.
+        """Fetch a specific recommendation for a Slingshot project.
+
+        Recommendations are suggested changes to Databricks job cluster
+        configurations meant to minimize costs while keeping job run time
+        within required SLAs. They are generated based on the previous job runs
+        associated with the Slingshot project.
 
         Args:
             project_id (str): The ID of the project that the recommendation
@@ -608,7 +630,7 @@ class ProjectAPI:
             recommendation_id (str): The ID of the recommendation to fetch.
 
         Returns:
-            RecommendationDetailsSchema: The details of the specific
+            RecommendationDetailsSchema: A dictionary with details of the
             recommendation.
 
         """
@@ -641,9 +663,8 @@ class ProjectAPI:
             recommendation_id (str): The ID of the recommendation to fetch.
 
         Returns:
-            RecommendationDetailsSchema: The details of the recommendation
-            that was applied.
-
+            RecommendationDetailsSchema: A dictionary with details of the
+            recommendation that was applied.
         """
         # Apply the recommendation to the project. This raises an error if
         # unsuccessful.

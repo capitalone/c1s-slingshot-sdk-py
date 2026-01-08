@@ -64,7 +64,7 @@ new_project = client.projects.create(
     name="My New Project",
     workspace_id="databricks-workspace-id",
     job_id="databricks-job-id",
-    cluster_name="job-compute-cluster-name-in-databricks-job",
+    cluster_path="job_clusters/step_1_cluster",
 )
 
 # Create a recommendation (available once Slingshot has received data for
