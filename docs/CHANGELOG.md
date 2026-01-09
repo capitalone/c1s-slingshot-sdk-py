@@ -2,6 +2,12 @@
 
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
+## v1.2.2 (2026-01-07)
+
+### Fix
+
+- Revert "C1s slingshot sdk py internal sli 24708 3 (#64)" (#67)
+
 ## v1.2.1 (2025-12-10)
 No changes. Bumping patch number to resolve filename conflict in PyPI.
 

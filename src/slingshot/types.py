@@ -196,6 +196,7 @@ class SettingsSchema(TypedDict):
     """Schema for additional project settings in Slingshot."""
 
     sla_minutes: Optional[int]
+    fix_scaling_type: Optional[bool]
     auto_apply_recs: Optional[bool]
     optimize_instance_size: Optional[bool]
 

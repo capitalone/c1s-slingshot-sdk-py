@@ -62,24 +62,28 @@ settings_alpha: AssignSettingsSchema = {
     "sla_minutes": 60,
     "fix_scaling_type": False,
     "auto_apply_recs": True,
+    "fix_scaling_type": False,
     "optimize_instance_size": True,
 }
 settings_beta: AssignSettingsSchema = {
     "sla_minutes": None,
     "fix_scaling_type": None,
     "auto_apply_recs": False,
+    "fix_scaling_type": None,
     "optimize_instance_size": True,
 }
 settings_delta: AssignSettingsSchema = {
     "sla_minutes": 240,
     "fix_scaling_type": False,
     "auto_apply_recs": False,
+    "fix_scaling_type": False,
     "optimize_instance_size": False,
 }
 settings_epsilon: AssignSettingsSchema = {
     "sla_minutes": None,
     "fix_scaling_type": True,
     "auto_apply_recs": True,
+    "fix_scaling_type": True,
     "optimize_instance_size": None,
 }
 
