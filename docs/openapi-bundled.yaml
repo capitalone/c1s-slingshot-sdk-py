@@ -370,6 +370,31 @@ paths:
                   detail:
                     type: string
                     example: Project with this name already exists.
+    delete:
+      tags:
+      - Projects
+      summary: Delete a project
+      operationId: deleteProjectById
+      parameters:
+      - in: path
+        name: project_id
+        required: true
+        schema:
+          type: string
+        description: Unique identifier for the project.
+      responses:
+        '200':
+          description: Project deleted successfully.
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: The requested resource was not found.
   /projects/{project_id}/recommendations:
     post:
       tags:

@@ -36,7 +36,7 @@ from slingshot import SlingshotClient
 client = SlingshotClient(api_key="your-api-key")
 
 # Use the client to interact with the API
-projects = client.projects.list()
+projects = client.projects.get_projects()
 ```
 
 ## Indices and tables
