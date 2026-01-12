@@ -9,11 +9,11 @@ from pytest_httpx import HTTPXMock
 
 from slingshot.client import SlingshotClient
 from slingshot.types import (
+    AssignSettingsSchema,
     Page,
     ProjectCreatorSchema,
     ProjectMetricsSchema,
     ProjectSchema,
-    ProjectSettingsSchema,
     RecommendationDetailsSchema,
 )
 
@@ -58,25 +58,25 @@ creator_admin: ProjectCreatorSchema = {
     "updatedAt": "2023-11-01T00:00:00Z",
 }
 
-settings_alpha: ProjectSettingsSchema = {
+settings_alpha: AssignSettingsSchema = {
     "sla_minutes": 60,
     "auto_apply_recs": True,
     "fix_scaling_type": False,
     "optimize_instance_size": True,
 }
-settings_beta: ProjectSettingsSchema = {
+settings_beta: AssignSettingsSchema = {
     "sla_minutes": None,
     "auto_apply_recs": False,
     "fix_scaling_type": None,
     "optimize_instance_size": True,
 }
-settings_delta: ProjectSettingsSchema = {
+settings_delta: AssignSettingsSchema = {
     "sla_minutes": 240,
     "auto_apply_recs": False,
     "fix_scaling_type": False,
     "optimize_instance_size": False,
 }
-settings_epsilon: ProjectSettingsSchema = {
+settings_epsilon: AssignSettingsSchema = {
     "sla_minutes": None,
     "auto_apply_recs": True,
     "fix_scaling_type": True,
@@ -99,91 +99,101 @@ metrics_epsilon: ProjectMetricsSchema = {
     "estimated_savings": 200,
 }
 
-mock_projects: list[ProjectSchema] = [
+mock_projects = [
     {
-        "id": "proj_a1b2c3d4",
-        "name": "Alpha ETL Pipeline",
-        "created_at": "2025-07-21T10:30:00Z",
-        "updated_at": "2025-07-21T11:00:00Z",
-        "app_id": "app-alpha-etl",
-        "cluster_path": "/clusters/alpha",
-        "job_id": "job-112233",
-        "workspace_id": "ws-prod-1",
-        "creator_id": "user_1a2b",
-        "product_name": "DataStream Pro",
-        "phase": "ACTIVE",
-        "description": "Daily customer event data processing.",
-        "settings": settings_alpha,
-        "metrics": metrics_alpha,
-        "creator": creator_jane,
+        "result": {
+            "id": "proj_a1b2c3d4",
+            "name": "Alpha ETL Pipeline",
+            "created_at": "2025-07-21T10:30:00Z",
+            "updated_at": "2025-07-21T11:00:00Z",
+            "app_id": "app-alpha-etl",
+            "cluster_path": "/clusters/alpha",
+            "job_id": "job-112233",
+            "workspace_id": "ws-prod-1",
+            "creator_id": "user_1a2b",
+            "product_name": "DataStream Pro",
+            "phase": "ACTIVE",
+            "description": "Daily customer event data processing.",
+            "settings": settings_alpha,
+            "metrics": metrics_alpha,
+            "creator": creator_jane,
+        }
     },
     {
-        "id": "proj_b2c3d4e5",
-        "name": "Beta Analytics Dashboard",
-        "created_at": "2025-07-20T09:00:00Z",
-        "updated_at": "2025-07-20T09:05:00Z",
-        "app_id": None,
-        "cluster_path": None,
-        "job_id": None,
-        "workspace_id": "ws-analytics-1",
-        "creator_id": "user_3c4d",
-        "product_name": "Insight Suite",
-        "phase": "PENDING",
-        "description": None,
-        "settings": None,
-        "metrics": None,
-        "creator": creator_john,
+        "result": {
+            "id": "proj_b2c3d4e5",
+            "name": "Beta Analytics Dashboard",
+            "created_at": "2025-07-20T09:00:00Z",
+            "updated_at": "2025-07-20T09:05:00Z",
+            "app_id": None,
+            "cluster_path": None,
+            "job_id": None,
+            "workspace_id": "ws-analytics-1",
+            "creator_id": "user_3c4d",
+            "product_name": "Insight Suite",
+            "phase": "PENDING",
+            "description": None,
+            "settings": None,
+            "metrics": None,
+            "creator": creator_john,
+        }
     },
     {
-        "id": "proj_c3d4e5f6",
-        "name": "Gamma Data Warehouse Ingest",
-        "created_at": "2025-06-15T14:00:00Z",
-        "updated_at": "2025-07-18T11:20:00Z",
-        "app_id": None,
-        "cluster_path": None,
-        "job_id": None,
-        "workspace_id": None,
-        "creator_id": None,
-        "product_name": "Data Warehouse",
-        "phase": "ACTIVE",
-        "description": None,
-        "settings": None,
-        "metrics": None,
-        "creator": None,
+        "result": {
+            "id": "proj_c3d4e5f6",
+            "name": "Gamma Data Warehouse Ingest",
+            "created_at": "2025-06-15T14:00:00Z",
+            "updated_at": "2025-07-18T11:20:00Z",
+            "app_id": None,
+            "cluster_path": None,
+            "job_id": None,
+            "workspace_id": None,
+            "creator_id": None,
+            "product_name": "Data Warehouse",
+            "phase": "ACTIVE",
+            "description": None,
+            "settings": None,
+            "metrics": None,
+            "creator": None,
+        }
     },
     {
-        "id": "proj_d4e5f6a7",
-        "name": "Delta ML Model Training",
-        "created_at": "2025-01-10T18:45:00Z",
-        "updated_at": "2025-03-05T19:00:00Z",
-        "app_id": "app-delta-ml",
-        "cluster_path": "/clusters/ml-gpu",
-        "job_id": "job-778899",
-        "workspace_id": None,
-        "creator_id": "user_1a2b",
-        "product_name": "AI/ML Platform",
-        "phase": "ARCHIVED",
-        "description": "Sentiment analysis model v2.",
-        "settings": None,
-        "metrics": metrics_alpha,
-        "creator": creator_jane,
+        "result": {
+            "id": "proj_d4e5f6a7",
+            "name": "Delta ML Model Training",
+            "created_at": "2025-01-10T18:45:00Z",
+            "updated_at": "2025-03-05T19:00:00Z",
+            "app_id": "app-delta-ml",
+            "cluster_path": "/clusters/ml-gpu",
+            "job_id": "job-778899",
+            "workspace_id": None,
+            "creator_id": "user_1a2b",
+            "product_name": "AI/ML Platform",
+            "phase": "ARCHIVED",
+            "description": "Sentiment analysis model v2.",
+            "settings": None,
+            "metrics": metrics_alpha,
+            "creator": creator_jane,
+        }
     },
     {
-        "id": "proj_e5f6a7b8",
-        "name": "Epsilon Alerting Service",
-        "created_at": "2025-05-01T12:00:00Z",
-        "updated_at": "2025-07-21T08:15:30Z",
-        "app_id": None,
-        "cluster_path": "/clusters/epsilon-alerts",
-        "job_id": None,
-        "workspace_id": "ws-epsilon-prod",
-        "creator_id": "user_3c4d",
-        "product_name": "Proactive Alerting",
-        "phase": "MAINTENANCE",
-        "description": "Real-time anomaly detection.",
-        "settings": settings_alpha,
-        "metrics": None,
-        "creator": creator_john,
+        "result": {
+            "id": "proj_e5f6a7b8",
+            "name": "Epsilon Alerting Service",
+            "created_at": "2025-05-01T12:00:00Z",
+            "updated_at": "2025-07-21T08:15:30Z",
+            "app_id": None,
+            "cluster_path": "/clusters/epsilon-alerts",
+            "job_id": None,
+            "workspace_id": "ws-epsilon-prod",
+            "creator_id": "user_3c4d",
+            "product_name": "Proactive Alerting",
+            "phase": "MAINTENANCE",
+            "description": "Real-time anomaly detection.",
+            "settings": settings_alpha,
+            "metrics": None,
+            "creator": creator_john,
+        }
     },
 ]
 
@@ -233,7 +243,7 @@ def test_call_get_project_n_times(
             include=include,
         )
 
-        assert result == randomized_payload_set[i]
+        assert result == randomized_payload_set[i].get("result", {})
     assert len(httpx_mock.get_requests()) == call_count
 
 
@@ -260,18 +270,24 @@ mock_project_response: ProjectSchema = {
     "create_args, expected_payload",
     [
         (
-            {"name": "Simple Project", "workspaceId": "12345678901234"},
+            {"name": "Simple Project", "workspace_id": "12345678901234"},
+            # The Slingshot API expects camelCase for the workspace_id key,
+            # so the projects.create and projects.update methods convert the
+            # workspace_id key to workspaceId when sending the request, but
+            # keep those parameters in snake_case in the method signatures for
+            # consistency with the rest of the SDK and Python conventions.
             {"name": "Simple Project", "workspaceId": "12345678901234"},
         ),
         (
             {
                 "name": "Complex Project",
-                "workspaceId": "12345678901234",
+                "workspace_id": "12345678901234",
                 "app_id": "app_123",
                 "description": "A test.",
             },
             {
                 "name": "Complex Project",
+                # See note above on the workspaceId key.
                 "workspaceId": "12345678901234",
                 "app_id": "app_123",
                 "description": "A test.",
@@ -280,11 +296,12 @@ mock_project_response: ProjectSchema = {
         (
             {
                 "name": "Project With Settings",
-                "workspaceId": "12345678901234",
+                "workspace_id": "12345678901234",
                 "settings": {"sla_minutes": 120},
             },
             {
                 "name": "Project With Settings",
+                # See note above on the workspaceId key.
                 "workspaceId": "12345678901234",
                 "settings": {"sla_minutes": 120},
             },
@@ -428,7 +445,7 @@ def test_create_project_recommendation(httpx_mock: HTTPXMock, client: SlingshotC
         status_code=202,
     )
 
-    result = client.projects.create_project_recommendation(project_id=project_id)
+    result = client.projects.create_recommendation(project_id=project_id)
     assert result == expected_response
 
 
@@ -452,7 +469,7 @@ def test_get_project_recommendation(httpx_mock: HTTPXMock, client: SlingshotClie
         status_code=200,
     )
 
-    result = client.projects.get_project_recommendation(
+    result = client.projects.get_recommendation(
         project_id=project_id, recommendation_id=recommendation_id
     )
     assert result == expected_response

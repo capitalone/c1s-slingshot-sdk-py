@@ -46,7 +46,10 @@ def _remove_unset_keys(obj):
 
 
 class SlingshotClient:
-    """SlingshotClient is a client for interacting with the Slingshot API."""
+    """SlingshotClient is a client for interacting with the Slingshot API.
+
+    Get an API key from: https://slingshot.capitalone.com/configurations/api-keys
+    """
 
     def __init__(
         self,
@@ -60,13 +63,15 @@ class SlingshotClient:
                 for the environment variable SLINGSHOT_API_KEY.
             api_url (str): The base URL for the Slingshot API. If not provided, it will look
                 for the environment variable SLINGSHOT_API_URL, if not set, it will default
-                to DEFAULT_API_URL
+                to "https://slingshot.capitalone.com/prod/api/gradient".
 
         Raises:
             ValueError: If the API key is not provided and not found in the environment.
 
         Example:
             >>> from slingshot.client import SlingshotClient
+            >>> # Or:
+            >>> # from slingshot import SlingshotClient
             >>> client = SlingshotClient(api_key="your_api_key")
 
         """
@@ -79,6 +84,10 @@ class SlingshotClient:
         self._api_key = api_key
 
         self._api_url = api_url or os.getenv("SLINGSHOT_API_URL") or DEFAULT_API_URL
+
+    def __repr__(self):
+        """Return a string representation of the SlingshotClient."""
+        return f'SlingshotClient(api_url="{self._api_url}", api_key="***")'
 
     @backoff.on_exception(
         backoff.expo,

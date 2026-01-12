@@ -12,8 +12,8 @@ line-length=72
 words=WIP,wip
 
 [title-match-regex]
-# Enforce conventional commit format
-regex=^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+
+# Enforce conventional commit format. See: https://www.conventionalcommits.org/
+regex=^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?(!)?: .+$
 
 [body-max-line-length]
 # Max body line length
