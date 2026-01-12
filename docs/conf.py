@@ -128,6 +128,7 @@ napoleon_attr_annotations = True
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
+    "databricks": ("https://databricks-sdk-py.readthedocs.io/en/latest/", None),
 }
 
 # -- Options for todo extension ---------------------------------------------
@@ -138,7 +139,10 @@ todo_include_todos = True
 # -- Options for extlinks extension -----------------------------------------
 
 extlinks = {
-    "issue": ("https://github.com/capitalone/c1s-slingshot-sdk-py/issues/%s", "issue #%s"),
+    "issue": (
+        "https://github.com/capitalone/c1s-slingshot-sdk-py/issues/%s",
+        "issue #%s",
+    ),
     "pr": ("https://github.com/capitalone/c1s-slingshot-sdk-py/pull/%s", "PR #%s"),
 }
 

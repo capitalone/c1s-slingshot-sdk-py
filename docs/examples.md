@@ -23,7 +23,7 @@ def main():
     print("\nCreating a new project:")
     new_project = client.projects.create({
         "name": "Example Project",
-        "workspaceId": "12345678901234",
+        "workspace_id": "12345678901234",
         "app_id": "example-app",
     })
     print(f"Created project: {new_project['name']}")
