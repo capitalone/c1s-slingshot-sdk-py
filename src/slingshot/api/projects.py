@@ -565,8 +565,8 @@ class ProjectAPI:
         linked to a Databricks job (or a cluster within that job).
 
         The recommendation will be in a "PENDING" state immediately after
-        creation, meaning it is still being processed. It can be applied once
-        its state is "SUCCESS".
+        creation, meaning it is still being processed. It can be applied if
+        its state is "PENDING", "UPLOADING", or "SUCCESS" (but not "FAILURE").
 
         Note:
             The returned value, a dictionary with info about the
@@ -654,8 +654,17 @@ class ProjectAPI:
     ) -> RecommendationDetailsSchema:
         """Apply a recommendation to the Slingshot project.
 
-        The recommendation is applied to the Databricks job associated
+        The recommendation is applied to the Databricks job cluster associated
         with the Slingshot project.
+
+        Recommendations are suggested changes to Databricks job cluster
+        configurations meant to minimize costs while keeping job run time
+        within required SLAs. They are generated based on the previous job runs
+        linked to the Slingshot project.
+
+        A recommendation can be applied if its state is "SUCCESS", "PENDING",
+        or "UPLOADING". If the recommendation is in a "FAILURE" state,
+        applying it will raise an error.
 
         Args:
             project_id (str): The ID of the project that the recommendation
