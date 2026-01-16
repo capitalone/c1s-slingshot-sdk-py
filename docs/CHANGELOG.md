@@ -2,6 +2,12 @@
 
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
+## v2.0.0 (2026-01-12)
+
+### Feat
+
+- add method for project deletion (#65)
+
 ## v1.2.2 (2026-01-07)
 
 ### Fix
