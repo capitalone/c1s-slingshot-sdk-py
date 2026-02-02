@@ -107,7 +107,7 @@ wheels = [
 
 [[package]]
 name = "c1s-slingshot-sdk-py"
-version = "1.2.2"
+version = "2.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },

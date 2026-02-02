@@ -141,15 +141,6 @@ class ProjectAPI:
                     job should take to complete. Slingshot uses this value as
                     an expected upper bound when optimizing the job for lowest
                     cost. Defaults to None.
-                - fix_scaling_type (Optional[bool], optional): Whether to maintain the autoscaling settings on the Databricks job cluster (if applicable).
-                    If set to True, Slingshot will keep autoscaling (if enabled)
-                    when making recommendations, but will set `min_workers` and
-                    `max_workers` to the same value based on Slingshot's
-                    recommendations (effectively creating a fixed-size cluster).
-                    If set to False, Slingshot will convert the job cluster to
-                    a fixed-size cluster with the number of workers set based
-                    on Slingshot's recommendations.
-                    Defaults to True.
                 - auto_apply_recs (Optional[bool], optional): Automatically apply recommendations.
                     Defaults to False.
                 - optimize_instance_size (Optional[bool], optional): Whether to optimize the instance size.
@@ -185,7 +176,6 @@ class ProjectAPI:
             json["settings"] = {}
             for key in (
                 "sla_minutes",
-                "fix_scaling_type",
                 "auto_apply_recs",
                 "optimize_instance_size",
             ):
@@ -319,14 +309,6 @@ class ProjectAPI:
                     job should take to complete. Slingshot uses this value as
                     an expected upper bound when optimizing the job for lowest
                     cost.
-                - fix_scaling_type (Optional[bool], optional): Whether to maintain the autoscaling settings on the Databricks job cluster (if applicable).
-                    If set to True, Slingshot will keep autoscaling (if enabled)
-                    when making recommendations, but will set `min_workers` and
-                    `max_workers` to the same value based on Slingshot's
-                    recommendations (effectively creating a fixed-size cluster).
-                    If set to False, Slingshot will convert the job cluster to
-                    a fixed-size cluster with the number of workers set based
-                    on Slingshot's recommendations.
                 - auto_apply_recs (Optional[bool], optional): Automatically apply recommendations.
                 - optimize_instance_size (Optional[bool], optional): Whether to optimize the instance size.
                     If set to True, Slingshot will attempt to optimize the
@@ -362,7 +344,6 @@ class ProjectAPI:
             json["settings"] = {}
             for key in (
                 "sla_minutes",
-                "fix_scaling_type",
                 "auto_apply_recs",
                 "optimize_instance_size",
             ):
