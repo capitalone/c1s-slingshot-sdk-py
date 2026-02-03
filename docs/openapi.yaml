@@ -241,8 +241,8 @@ paths:
         Update the attributes of an existing Slingshot project. Only the fields provided
         in the request body will be updated; all other fields remain unchanged.
         Fields explicitly set to `null` will clear the existing value.
-        
-        
+
+
         **Note**: If you change the Databricks workspace or job associated with the project,
         consider using the reset endpoint to clear previous job run data and allow Slingshot
         to re-optimize without influence from previous runs.
@@ -342,8 +342,8 @@ paths:
         Use this to clear historical run data and start fresh, which is useful when a job
         changes significantly and you want Slingshot to re-optimize without influence from
         previous runs.
-        
-        
+
+
         This does not affect the Databricks job associated with the project; run history
         will still be accessible from the Databricks platform.
       operationId: resetProject
@@ -363,13 +363,13 @@ paths:
         Create a new recommendation for a Slingshot project. Recommendations are suggested
         changes to Databricks job cluster configurations meant to minimize costs while
         keeping job run time within required SLAs.
-        
-        
+
+
         A recommendation can be created once Slingshot has received details about at least
         one successful job run associated with the project. The recommendation will be in
         a "PENDING" state immediately after creation while it is being processed.
-        
-        
+
+
         Use the Get Recommendation endpoint to retrieve the full details once processing
         is complete.
       operationId: createRecommendation
@@ -481,8 +481,8 @@ paths:
       description: >
         Apply a recommendation to the Databricks job cluster associated with the Slingshot project.
         This updates the job cluster configuration in Databricks with the recommended settings.
-        
-        
+
+
         A recommendation can be applied if its state is "SUCCESS", "PENDING", or "UPLOADING".
         Applying a recommendation in "FAILURE" state will result in an error.
       operationId: applyRecommendation
