@@ -2,23 +2,21 @@ openapi: 3.0.3
 info:
   title: Capital One Slingshot API
   version: 1.0.0
-  description: |
-    The Slingshot public API documentation for the Python SDK. This API allows
-    users to manage projects, generate recommendations, and access utility endpoints.
+  description: >
+    The Slingshot API allows users to manage projects that optimize Databricks job clusters,
+    generate cost-saving recommendations, and apply those recommendations to reduce compute costs
+    while maintaining job performance within required SLAs.
 
 servers:
-  - url: https://slingshot.capitalone.com/prod/api/gradient
+  - url: https://slingshot.capitalone.com/prod/api/gradient/v1
     description: Production Environment
 
 tags:
   - name: Projects
-    description: Manage projects, including creation, updates, and deletion.
+    description: Manage Slingshot projects for optimizing Databricks job clusters, including creation, updates, deletion, and reset operations.
   - name: Recommendations
-    description: Generate and fetch project recommendations.
-  - name: Utility
-    description: Health and utility endpoints.
+    description: Generate, retrieve, and apply cost-saving recommendations for Databricks job cluster configurations.
 
-# Default security for all endpoints
 security:
   - ApiKeyAuth: []
 
@@ -27,182 +25,485 @@ paths:
     get:
       tags: [Projects]
       summary: List all projects
-      operationId: listAllProjects
+      description: >
+        Retrieve a paginated list of all Slingshot projects belonging to the tenant of the authenticated user.
+        Projects can be filtered by creator ID, application ID, or Databricks job ID.
+      operationId: listProjects
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
-        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/CreatorIdFilter'
+        - $ref: '#/components/parameters/AppIdFilter'
+        - $ref: '#/components/parameters/JobIdFilter'
       responses:
         '200':
           description: A paginated list of projects.
-          headers:
-            X-Total-Count:
-              description: Total number of projects across all pages.
-              schema: { type: integer, minimum: 0 }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectPage'
               examples:
                 sample:
+                  summary: Example project list response
                   value:
                     page: 1
-                    size: 2
-                    total: 42
+                    pages: 3
                     items:
-                      - id: "proj_123"
-                        name: "Fraud Scoring"
-                        description: "Detect anomalous transactions"
+                      - id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                        name: "Fraud Detection Pipeline"
+                        description: "Optimizes the fraud detection Spark job"
+                        app_id: "fraud-detection-prod"
+                        job_id: "123456789"
+                        workspace_id: "1234567890123456"
+                        cluster_path: "job_clusters/main-cluster"
+                        creator_id: "user-abc123"
+                        phase: "ACTIVE"
                         created_at: "2024-05-10T12:30:00Z"
                         updated_at: "2024-06-01T09:00:00Z"
-                      - id: "proj_124"
-                        name: "Churn Model"
-                        description: "Predict churn propensity"
+                        settings:
+                          sla_minutes: 60
+                          auto_apply_recs: false
+                          optimize_instance_size: true
+                        metrics:
+                          job_success_rate_percent: 98
+                          sla_met_percent: 95
+                          estimated_savings: 1500
+                      - id: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+                        name: "ETL Daily Job"
+                        description: "Daily data transformation pipeline"
+                        app_id: "etl-daily"
+                        job_id: "987654321"
+                        workspace_id: "1234567890123456"
+                        cluster_path: "tasks/transform_task"
+                        creator_id: "user-xyz789"
+                        phase: "ACTIVE"
                         created_at: "2024-05-11T08:00:00Z"
                         updated_at: "2024-06-02T10:15:00Z"
+                        settings:
+                          sla_minutes: 120
+                          auto_apply_recs: true
+                          optimize_instance_size: false
+                        metrics:
+                          job_success_rate_percent: 100
+                          sla_met_percent: 100
+                          estimated_savings: 800
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
     post:
       tags: [Projects]
       summary: Create a new project
-      operationId: createNewProject
+      description: >
+        Create a new Slingshot project for optimizing a Databricks job cluster.
+        A project links a Databricks job (or a specific cluster within that job) to Slingshot
+        for monitoring and optimization. Once created, Slingshot will begin analyzing job runs
+        and generating cost-saving recommendations.
+      operationId: createProject
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ProjectCreate' }
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
             examples:
-              sample:
+              minimal:
+                summary: Minimal project creation
                 value:
-                  name: "Pricing Optimization"
-                  workspaceId: "12345678901234"
-                  description: "Optimize price points for conversions"
+                  name: "My Spark Job Optimization"
+                  workspaceId: "1234567890123456"
+              full:
+                summary: Full project creation with all options
+                value:
+                  name: "Fraud Detection Pipeline"
+                  workspaceId: "1234567890123456"
+                  description: "Optimizes the fraud detection Spark job for cost efficiency"
+                  app_id: "fraud-detection-prod"
+                  job_id: "123456789"
+                  cluster_path: "job_clusters/main-cluster"
+                  settings:
+                    sla_minutes: 60
+                    auto_apply_recs: false
+                    optimize_instance_size: true
       responses:
-        '201':
+        '200':
           description: Project created successfully.
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Project' }
+              schema:
+                $ref: '#/components/schemas/ProjectResult'
               examples:
                 sample:
+                  summary: Created project response
                   value:
-                    id: "proj_125"
-                    name: "Pricing Optimization"
-                    description: "Optimize price points for conversions"
-                    created_at: "2024-07-01T10:00:00Z"
-                    updated_at: "2024-07-01T10:00:00Z"
-        '400': { $ref: '#/components/responses/BadRequest' }
+                    result:
+                      id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      name: "Fraud Detection Pipeline"
+                      description: "Optimizes the fraud detection Spark job for cost efficiency"
+                      app_id: "fraud-detection-prod"
+                      job_id: "123456789"
+                      workspace_id: "1234567890123456"
+                      cluster_path: "job_clusters/main-cluster"
+                      creator_id: "user-abc123"
+                      phase: "PENDING"
+                      created_at: "2024-07-01T10:00:00Z"
+                      updated_at: "2024-07-01T10:00:00Z"
+                      settings:
+                        sla_minutes: 60
+                        auto_apply_recs: false
+                        optimize_instance_size: true
+                      metrics: null
         '401': { $ref: '#/components/responses/Unauthorized' }
         '409': { $ref: '#/components/responses/Conflict' }
         '422': { $ref: '#/components/responses/UnprocessableEntity' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
 
   /projects/{project_id}:
     get:
       tags: [Projects]
-      summary: Retrieve a specific project
-      operationId: getProjectById
+      summary: Get a project
+      description: >
+        Retrieve details of a specific Slingshot project by its unique identifier.
+        Use the `include` parameter to include related resources like the project creator.
+      operationId: getProject
       parameters:
         - $ref: '#/components/parameters/ProjectId'
+        - $ref: '#/components/parameters/Include'
       responses:
         '200':
-          description: Project details.
+          description: Project details retrieved successfully.
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Project' }
+              schema:
+                $ref: '#/components/schemas/ProjectResult'
               examples:
                 sample:
+                  summary: Project details response
                   value:
-                    id: "proj_123"
-                    name: "Fraud Scoring"
-                    description: "Detect anomalous transactions"
-                    created_at: "2024-05-10T12:30:00Z"
-                    updated_at: "2024-06-01T09:00:00Z"
+                    result:
+                      id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      name: "Fraud Detection Pipeline"
+                      description: "Optimizes the fraud detection Spark job"
+                      app_id: "fraud-detection-prod"
+                      job_id: "123456789"
+                      workspace_id: "1234567890123456"
+                      cluster_path: "job_clusters/main-cluster"
+                      creator_id: "user-abc123"
+                      phase: "ACTIVE"
+                      product_name: "Slingshot"
+                      created_at: "2024-05-10T12:30:00Z"
+                      updated_at: "2024-06-01T09:00:00Z"
+                      settings:
+                        sla_minutes: 60
+                        auto_apply_recs: false
+                        optimize_instance_size: true
+                      metrics:
+                        job_success_rate_percent: 98
+                        sla_met_percent: 95
+                        estimated_savings: 1500
+                with_creator:
+                  summary: Project details with creator included
+                  value:
+                    result:
+                      id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      name: "Fraud Detection Pipeline"
+                      description: "Optimizes the fraud detection Spark job"
+                      app_id: "fraud-detection-prod"
+                      job_id: "123456789"
+                      workspace_id: "1234567890123456"
+                      cluster_path: "job_clusters/main-cluster"
+                      creator_id: "user-abc123"
+                      phase: "ACTIVE"
+                      created_at: "2024-05-10T12:30:00Z"
+                      updated_at: "2024-06-01T09:00:00Z"
+                      settings:
+                        sla_minutes: 60
+                        auto_apply_recs: false
+                        optimize_instance_size: true
+                      metrics:
+                        job_success_rate_percent: 98
+                        sla_met_percent: 95
+                        estimated_savings: 1500
+                      creator:
+                        userId: "user-abc123"
+                        firstName: "John"
+                        lastName: "Doe"
+                        email: "john.doe@example.com"
+                        isActive: true
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
-    patch:
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+    put:
       tags: [Projects]
       summary: Update a project
-      operationId: updateProjectById
+      description: >
+        Update the attributes of an existing Slingshot project. Only the fields provided
+        in the request body will be updated; all other fields remain unchanged.
+        Fields explicitly set to `null` will clear the existing value.
+
+
+        **Note**: If you change the Databricks workspace or job associated with the project,
+        consider using the reset endpoint to clear previous job run data and allow Slingshot
+        to re-optimize without influence from previous runs.
+      operationId: updateProject
       parameters:
         - $ref: '#/components/parameters/ProjectId'
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/ProjectUpdate' }
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
             examples:
-              sample:
+              update_description:
+                summary: Update project description
                 value:
-                  description: "Updated project description"
+                  description: "Updated description for the project"
+              update_settings:
+                summary: Update project settings
+                value:
+                  settings:
+                    sla_minutes: 90
+                    auto_apply_recs: true
+              update_job:
+                summary: Update associated Databricks job
+                value:
+                  job_id: "999888777"
+                  cluster_path: "job_clusters/new-cluster"
       responses:
         '200':
           description: Project updated successfully.
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Project' }
+              schema:
+                $ref: '#/components/schemas/ProjectResult'
+              examples:
+                sample:
+                  summary: Updated project response
+                  value:
+                    result:
+                      id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      name: "Fraud Detection Pipeline"
+                      description: "Updated description for the project"
+                      app_id: "fraud-detection-prod"
+                      job_id: "123456789"
+                      workspace_id: "1234567890123456"
+                      cluster_path: "job_clusters/main-cluster"
+                      creator_id: "user-abc123"
+                      phase: "ACTIVE"
+                      created_at: "2024-05-10T12:30:00Z"
+                      updated_at: "2024-07-15T14:30:00Z"
+                      settings:
+                        sla_minutes: 60
+                        auto_apply_recs: false
+                        optimize_instance_size: true
+                      metrics:
+                        job_success_rate_percent: 98
+                        sla_met_percent: 95
+                        estimated_savings: 1500
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
     delete:
       tags: [Projects]
       summary: Delete a project
-      operationId: deleteProjectById
+      description: >
+        Delete a Slingshot project by its unique identifier. This removes the project
+        from Slingshot but does not affect the Databricks job that was associated with it.
+        The Databricks job will continue to run as configured.
+      operationId: deleteProject
       parameters:
         - $ref: '#/components/parameters/ProjectId'
       responses:
         '200':
           description: Project deleted successfully.
-        '404': { $ref: '#/components/responses/NotFound' }
-
-  /projects/{project_id}/recommendations:
-    post:
-      tags: [Recommendations]
-      summary: Create a recommendation for a project
-      operationId: createRecommendationForProject
-      parameters:
-        - $ref: '#/components/parameters/ProjectId'
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RecommendationCreate'
-            examples:
-              sample:
-                value:
-                  strategy: "cost_savings"
-                  parameters:
-                    threshold: 0.8
-      responses:
-        '201':
-          description: Recommendation created successfully.
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Recommendation' }
+              schema:
+                $ref: '#/components/schemas/DeleteResult'
+              examples:
+                sample:
+                  summary: Delete confirmation
+                  value:
+                    result: "OK"
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
 
   /projects/{project_id}/reset:
     post:
-      tags: [Utility]
-      summary: Reset a project, removing all submissions data
+      tags: [Projects]
+      summary: Reset a project
+      description: >
+        Reset a Slingshot project by removing all previous job run data from the project.
+        Use this to clear historical run data and start fresh, which is useful when a job
+        changes significantly and you want Slingshot to re-optimize without influence from
+        previous runs.
+
+
+        This does not affect the Databricks job associated with the project; run history
+        will still be accessible from the Databricks platform.
       operationId: resetProject
       parameters:
         - $ref: '#/components/parameters/ProjectId'
       responses:
         '204':
-          description: Project reset successfully.
+          description: Project reset successfully. No content returned.
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
+
+  /projects/{project_id}/recommendations:
+    post:
+      tags: [Recommendations]
+      summary: Create a recommendation
+      description: >
+        Create a new recommendation for a Slingshot project. Recommendations are suggested
+        changes to Databricks job cluster configurations meant to minimize costs while
+        keeping job run time within required SLAs.
+
+
+        A recommendation can be created once Slingshot has received details about at least
+        one successful job run associated with the project. The recommendation will be in
+        a "PENDING" state immediately after creation while it is being processed.
+
+
+        Use the Get Recommendation endpoint to retrieve the full details once processing
+        is complete.
+      operationId: createRecommendation
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '202':
+          description: Recommendation creation accepted and processing started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResult'
+              examples:
+                sample:
+                  summary: Newly created recommendation (pending state)
+                  value:
+                    result:
+                      id: "rec-12345678-abcd-efgh-ijkl-mnopqrstuvwx"
+                      state: "PENDING"
+                      error: null
+                      created_at: "2024-07-15T10:00:00Z"
+                      updated_at: "2024-07-15T10:00:00Z"
+                      recommendation: null
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/UnprocessableEntity' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /projects/{project_id}/recommendations/{recommendation_id}:
+    get:
+      tags: [Recommendations]
+      summary: Get a recommendation
+      description: >
+        Retrieve the details of a specific recommendation for a Slingshot project.
+        The recommendation includes suggested cluster configuration changes, expected
+        metrics (duration, cost), and the settings that were used to generate it.
+      operationId: getRecommendation
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+        - $ref: '#/components/parameters/RecommendationId'
+      responses:
+        '200':
+          description: Recommendation details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResult'
+              examples:
+                pending:
+                  summary: Recommendation still processing
+                  value:
+                    result:
+                      id: "rec-12345678-abcd-efgh-ijkl-mnopqrstuvwx"
+                      state: "PENDING"
+                      error: null
+                      created_at: "2024-07-15T10:00:00Z"
+                      updated_at: "2024-07-15T10:00:05Z"
+                      recommendation: null
+                success:
+                  summary: Successfully generated recommendation
+                  value:
+                    result:
+                      id: "rec-12345678-abcd-efgh-ijkl-mnopqrstuvwx"
+                      state: "SUCCESS"
+                      error: null
+                      created_at: "2024-07-15T10:00:00Z"
+                      updated_at: "2024-07-15T10:01:30Z"
+                      recommendation:
+                        metrics:
+                          spark_duration_minutes: 45
+                          spark_cost_requested_usd: 12
+                        configuration:
+                          enable_elastic_disk: true
+                          node_type_id: "r5.2xlarge"
+                          num_workers: 4
+                          driver_node_type_id: "r5.xlarge"
+                          autoscale:
+                            min_workers: 2
+                            max_workers: 8
+                          aws_attributes:
+                            availability: "SPOT_WITH_FALLBACK"
+                            ebs_volume_count: 1
+                            ebs_volume_size: 100
+                            ebs_volume_type: "GENERAL_PURPOSE_SSD"
+                            first_on_demand: 1
+                            spot_bid_price_percent: 100
+                        settings:
+                          sla_minutes: 60
+                          auto_apply_recs: false
+                          optimize_instance_size: true
+                failure:
+                  summary: Failed recommendation
+                  value:
+                    result:
+                      id: "rec-12345678-abcd-efgh-ijkl-mnopqrstuvwx"
+                      state: "FAILURE"
+                      error: "Insufficient job run data to generate recommendation"
+                      created_at: "2024-07-15T10:00:00Z"
+                      updated_at: "2024-07-15T10:00:30Z"
+                      recommendation: null
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
 
   /projects/{project_id}/recommendations/{recommendation_id}/apply:
     post:
       tags: [Recommendations]
-      summary: Apply a recommendation to a project
+      summary: Apply a recommendation
+      description: >
+        Apply a recommendation to the Databricks job cluster associated with the Slingshot project.
+        This updates the job cluster configuration in Databricks with the recommended settings.
+
+
+        A recommendation can be applied if its state is "SUCCESS", "PENDING", or "UPLOADING".
+        Applying a recommendation in "FAILURE" state will result in an error.
       operationId: applyRecommendation
       parameters:
         - $ref: '#/components/parameters/ProjectId'
         - $ref: '#/components/parameters/RecommendationId'
       responses:
         '200':
-          description: Recommendation applied.
+          description: Recommendation applied successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplyResult'
+              examples:
+                sample:
+                  summary: Successful application
+                  value:
+                    result: "Recommendation applied successfully"
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
-        '422': { $ref: '#/components/responses/UnprocessableEntity' }
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
 
 components:
@@ -210,177 +511,778 @@ components:
     ApiKeyAuth:
       type: apiKey
       in: header
-      name: X-Api-Key
+      name: Auth
+      description: API key for authenticating requests to the Slingshot API.
 
   parameters:
     ProjectId:
       in: path
       name: project_id
       required: true
-      schema: { type: string }
-      description: Unique identifier for the project.
-    Page:
-      in: query
-      name: page
-      schema: { type: integer, minimum: 1, default: 1 }
-      description: 1-based page index.
+      schema:
+        type: string
+        format: uuid
+        example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+      description: Unique identifier (UUID) for the Slingshot project.
+
     RecommendationId:
       in: path
       name: recommendation_id
       required: true
-      schema: { type: string }
-      description: Unique identifier for the recommendation.
+      schema:
+        type: string
+        format: uuid
+        example: "rec-12345678-abcd-efgh-ijkl-mnopqrstuvwx"
+      description: Unique identifier (UUID) for the recommendation.
+
+    Page:
+      in: query
+      name: page
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: The 1-based page number to retrieve.
+
     Size:
       in: query
       name: size
-      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
-      description: Page size.
-    Sort:
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
+      description: The number of items to return per page.
+
+    Include:
       in: query
-      name: sort
-      schema: { type: string, example: "created_at:desc" }
-      description: Optional sort (field:direction).
+      name: include
+      schema:
+        type: array
+        items:
+          type: string
+          enum: [creator]
+      style: form
+      explode: true
+      description: >
+        Specifies related resources to include in the response.
+        Currently supports "creator" to include project creator details.
+
+    CreatorIdFilter:
+      in: query
+      name: creator_id
+      schema:
+        type: string
+      description: Filter projects by the ID of the user who created them.
+
+    AppIdFilter:
+      in: query
+      name: app_id
+      schema:
+        type: string
+      description: >
+        Filter projects by application ID. The app_id is a unique identifier
+        set at project creation time that can be used to look up projects.
+
+    JobIdFilter:
+      in: query
+      name: job_id
+      schema:
+        type: string
+      description: Filter projects by the associated Databricks job ID.
 
   responses:
-    BadRequest:
-      description: Invalid request.
-      content:
-        application/json:
-          schema: { $ref: '#/components/schemas/BadRequestError' }
     Unauthorized:
-      description: Unauthorized access.
+      description: Authentication required or invalid credentials.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/UnauthorizedError' }
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Authentication required."
+
     NotFound:
-      description: Resource not found.
+      description: The requested resource was not found.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/NotFoundError' }
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "The requested resource was not found."
+
     Conflict:
-      description: Conflict with existing resource.
+      description: Conflict with existing resource or invalid state.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/ConflictError' }
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Project with this app_id already exists."
+
     UnprocessableEntity:
-      description: Validation error.
+      description: Validation error in the request.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/ValidationError' }
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            detail:
+              - loc: ["body", "name"]
+                msg: "This field is required."
+                type: "value_error.missing"
+
+    TooManyRequests:
+      description: Rate limit exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Rate limit exceeded. Please try again later."
+
     ServiceUnavailable:
       description: Service is temporarily unavailable.
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/ServiceUnavailableError' }
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            detail: "Failed to apply recommendation. Service temporarily unavailable."
 
   schemas:
     Project:
       type: object
-      required: [id, name]
+      description: A Slingshot project for optimizing a Databricks job cluster.
+      required:
+        - id
+        - name
       properties:
-        id: { type: string }
-        name: { type: string }
-        description: { type: string, nullable: true }
-        created_at: { type: string, format: date-time }
-        updated_at: { type: string, format: date-time }
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the project.
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        name:
+          type: string
+          description: The name of the Slingshot project.
+          example: "Fraud Detection Pipeline"
+        description:
+          type: string
+          nullable: true
+          description: A description of the Slingshot project.
+          example: "Optimizes the fraud detection Spark job for cost efficiency"
+        app_id:
+          type: string
+          nullable: true
+          description: >
+            Application ID that uniquely identifies this project across all active projects
+            for a Slingshot subscriber. Immutable once set.
+          example: "fraud-detection-prod"
+        job_id:
+          type: string
+          nullable: true
+          description: The Databricks job ID associated with this project.
+          example: "123456789"
+        workspace_id:
+          type: string
+          nullable: true
+          description: The Databricks workspace ID where the job runs.
+          example: "1234567890123456"
+        cluster_path:
+          type: string
+          nullable: true
+          description: >
+            The path to the Databricks job cluster being optimized. Prefixed with
+            "job_clusters/" for shared job clusters or "tasks/" for task-specific clusters.
+          example: "job_clusters/main-cluster"
+        creator_id:
+          type: string
+          nullable: true
+          description: The ID of the user who created this project.
+          example: "user-abc123"
+        phase:
+          type: string
+          nullable: true
+          description: The current phase/status of the project.
+          example: "ACTIVE"
+        product_name:
+          type: string
+          nullable: true
+          description: The product name associated with this project.
+          example: "Slingshot"
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the project was created.
+          example: "2024-05-10T12:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the project was last updated.
+          example: "2024-06-01T09:00:00Z"
+        settings:
+          $ref: '#/components/schemas/ProjectSettings'
+        metrics:
+          $ref: '#/components/schemas/ProjectMetrics'
+        creator:
+          $ref: '#/components/schemas/ProjectCreator'
+
+    ProjectSettings:
+      type: object
+      nullable: true
+      description: Configuration settings for the Slingshot project.
+      properties:
+        sla_minutes:
+          type: integer
+          nullable: true
+          description: >
+            The acceptable time (in minutes) for the job to complete. Slingshot uses
+            this as an upper bound when optimizing for lowest cost.
+          example: 60
+        auto_apply_recs:
+          type: boolean
+          nullable: true
+          description: Whether to automatically apply recommendations when generated.
+          example: false
+        optimize_instance_size:
+          type: boolean
+          nullable: true
+          description: >
+            Whether to optimize the instance size of worker nodes. When enabled,
+            Slingshot will optimize both the number of workers and the instance size.
+          example: true
+
+    ProjectMetrics:
+      type: object
+      nullable: true
+      description: Performance and savings metrics for the project.
+      properties:
+        job_success_rate_percent:
+          type: integer
+          nullable: true
+          description: Percentage of job runs that completed successfully.
+          example: 98
+        sla_met_percent:
+          type: integer
+          nullable: true
+          description: Percentage of job runs that completed within the SLA.
+          example: 95
+        estimated_savings:
+          type: integer
+          nullable: true
+          description: Estimated cost savings in USD.
+          example: 1500
+
+    ProjectCreator:
+      type: object
+      nullable: true
+      description: Information about the user who created the project.
+      properties:
+        userId:
+          type: string
+          nullable: true
+          description: Unique identifier for the user.
+          example: "user-abc123"
+        auth0Id:
+          type: string
+          nullable: true
+          description: Auth0 identifier for the user.
+        tenantId:
+          type: string
+          nullable: true
+          description: Tenant identifier the user belongs to.
+        isTenantAdmin:
+          type: boolean
+          nullable: true
+          description: Whether the user is a tenant administrator.
+        firstName:
+          type: string
+          nullable: true
+          description: User's first name.
+          example: "John"
+        lastName:
+          type: string
+          nullable: true
+          description: User's last name.
+          example: "Doe"
+        email:
+          type: string
+          nullable: true
+          description: User's email address.
+          example: "john.doe@example.com"
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the user account was created.
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the user account was last updated.
+        isActive:
+          type: boolean
+          nullable: true
+          description: Whether the user account is active.
+          example: true
+        isRegistered:
+          type: boolean
+          nullable: true
+          description: Whether the user has completed registration.
 
     ProjectCreate:
       type: object
-      required: [name, workspaceId]
+      description: Request body for creating a new Slingshot project.
+      required:
+        - name
+        - workspaceId
       properties:
-        name: { type: string }
-        workspaceId: { type: string }
-        description: { type: string, nullable: true }
+        name:
+          type: string
+          description: The name for the new Slingshot project.
+          example: "Fraud Detection Pipeline"
+        workspaceId:
+          type: string
+          description: The Databricks workspace ID where the job runs.
+          example: "1234567890123456"
+        description:
+          type: string
+          nullable: true
+          description: A description for the Slingshot project.
+          example: "Optimizes the fraud detection Spark job for cost efficiency"
+        app_id:
+          type: string
+          nullable: true
+          description: >
+            Application ID that uniquely identifies this project. Must be unique
+            across all active projects for your Slingshot subscription. Immutable once set.
+          example: "fraud-detection-prod"
+        job_id:
+          type: string
+          nullable: true
+          description: The Databricks job ID to associate with this project.
+          example: "123456789"
+        cluster_path:
+          type: string
+          nullable: true
+          description: >
+            The path to the Databricks job cluster to optimize. Use "job_clusters/{cluster_name}"
+            for shared job clusters or "tasks/{task_name}" for task-specific clusters.
+            Required if the job has multiple compute clusters.
+          example: "job_clusters/main-cluster"
+        settings:
+          $ref: '#/components/schemas/AssignSettings'
 
     ProjectUpdate:
       type: object
-      description: Partial update; fields optional.
+      description: >
+        Request body for updating a Slingshot project. All fields are optional;
+        only provided fields will be updated.
       properties:
-        name: { type: string }
-        description: { type: string, nullable: true }
+        name:
+          type: string
+          nullable: true
+          description: New name for the project.
+          example: "Updated Pipeline Name"
+        workspaceId:
+          type: string
+          nullable: true
+          description: >
+            New Databricks workspace ID. Consider resetting the project after
+            changing this to clear historical data.
+          example: "9876543210987654"
+        description:
+          type: string
+          nullable: true
+          description: New description for the project.
+          example: "Updated project description"
+        job_id:
+          type: string
+          nullable: true
+          description: >
+            New Databricks job ID. Consider resetting the project after
+            changing this to clear historical data.
+          example: "999888777"
+        cluster_path:
+          type: string
+          nullable: true
+          description: >
+            New cluster path. Use "job_clusters/{cluster_name}" for shared job clusters
+            or "tasks/{task_name}" for task-specific clusters.
+          example: "job_clusters/new-cluster"
+        settings:
+          $ref: '#/components/schemas/AssignSettings'
+
+    AssignSettings:
+      type: object
+      nullable: true
+      description: Settings to assign to a Slingshot project.
+      properties:
+        sla_minutes:
+          type: integer
+          nullable: true
+          description: >
+            The acceptable time (in minutes) for the job to complete. Slingshot uses
+            this as an upper bound when optimizing for lowest cost.
+          example: 60
+        auto_apply_recs:
+          type: boolean
+          nullable: true
+          description: Whether to automatically apply recommendations when generated.
+          example: false
+        optimize_instance_size:
+          type: boolean
+          nullable: true
+          description: >
+            Whether to optimize the instance size of worker nodes. When enabled,
+            Slingshot optimizes both the number of workers and the instance size.
+          example: true
 
     ProjectPage:
       type: object
-      required: [page, size, total, items]
+      description: A paginated list of projects.
+      required:
+        - page
+        - pages
+        - items
       properties:
-        page: { type: integer }
-        size: { type: integer }
-        total: { type: integer }
+        page:
+          type: integer
+          description: Current page number (1-based).
+          example: 1
+        pages:
+          type: integer
+          description: Total number of pages available.
+          example: 3
         items:
           type: array
-          items: { $ref: '#/components/schemas/Project' }
+          description: List of projects on this page.
+          items:
+            $ref: '#/components/schemas/Project'
 
-    RecommendationCreate:
+    ProjectResult:
       type: object
+      description: Response wrapper containing a single project.
       properties:
-        strategy:
+        result:
+          $ref: '#/components/schemas/Project'
+
+    DeleteResult:
+      type: object
+      description: Response confirming successful deletion.
+      properties:
+        result:
           type: string
-          description: Recommendation strategy identifier.
-          example: cost_savings
-        parameters:
-          type: object
-          additionalProperties: true
-          description: Strategy-specific parameters.
+          description: Confirmation message.
+          example: "OK"
+
+    ApplyResult:
+      type: object
+      description: Response confirming successful recommendation application.
+      properties:
+        result:
+          type: string
+          description: Confirmation message.
+          example: "Recommendation applied successfully"
+
+    RecommendationDetails:
+      type: object
+      description: Details of a recommendation for a Slingshot project.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the recommendation.
+          example: "rec-12345678-abcd-efgh-ijkl-mnopqrstuvwx"
+        state:
+          type: string
+          enum: [PENDING, UPLOADING, SUCCESS, FAILURE]
+          description: >
+            Current state of the recommendation. PENDING means still processing,
+            SUCCESS means ready to apply, FAILURE means generation failed.
+          example: "SUCCESS"
+        error:
+          type: string
+          nullable: true
+          description: Error message if the recommendation failed to generate.
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the recommendation was created.
+          example: "2024-07-15T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the recommendation was last updated.
+          example: "2024-07-15T10:01:30Z"
+        recommendation:
+          $ref: '#/components/schemas/Recommendation'
 
     Recommendation:
       type: object
-      description: Recommendation details.
+      nullable: true
+      description: The actual recommendation content with metrics, configuration, and settings.
       properties:
-        id: { type: string, example: "rec_abc123" }
-        project_id: { type: string, example: "proj_123" }
-        created_at: { type: string, format: date-time }
-        state:
+        metrics:
+          $ref: '#/components/schemas/RecommendationMetrics'
+        configuration:
+          $ref: '#/components/schemas/RecommendationConfiguration'
+        settings:
+          $ref: '#/components/schemas/ProjectSettings'
+
+    RecommendationMetrics:
+      type: object
+      nullable: true
+      description: Expected performance metrics for the recommended configuration.
+      properties:
+        spark_duration_minutes:
+          type: integer
+          nullable: true
+          description: Expected Spark job duration in minutes.
+          example: 45
+        spark_cost_requested_usd:
+          type: integer
+          nullable: true
+          description: Expected cost in USD for the recommended configuration.
+          example: 12
+
+    RecommendationConfiguration:
+      type: object
+      nullable: true
+      description: Recommended Databricks cluster configuration.
+      properties:
+        enable_elastic_disk:
+          type: boolean
+          nullable: true
+          description: Whether to enable elastic disk for the cluster.
+          example: true
+        node_type_id:
           type: string
-          enum: [pending, running, complete, failed]
-        summary:
+          nullable: true
+          description: The recommended worker node type.
+          example: "r5.2xlarge"
+        num_workers:
+          type: integer
+          nullable: true
+          description: The recommended number of workers (for fixed-size clusters).
+          example: 4
+        driver_node_type_id:
           type: string
-          example: "Reduce instance size by one tier during off-peak hours."
-        details:
+          nullable: true
+          description: The recommended driver node type.
+          example: "r5.xlarge"
+        autoscale:
+          $ref: '#/components/schemas/AutoscaleConfig'
+        aws_attributes:
+          $ref: '#/components/schemas/AwsAttributes'
+        azure_attributes:
+          $ref: '#/components/schemas/AzureAttributes'
+        cluster_log_conf:
+          $ref: '#/components/schemas/ClusterLogConf'
+        default_tags:
           type: object
-          additionalProperties: true
+          nullable: true
+          additionalProperties:
+            type: string
+          description: Default tags to apply to the cluster.
+        spec:
+          $ref: '#/components/schemas/ClusterSpec'
 
-    BadRequestError:
+    AutoscaleConfig:
       type: object
+      nullable: true
+      description: Autoscaling configuration for the cluster.
       properties:
-        detail:
-          type: array
-          items:
-            type: object
-            properties:
-              loc:
-                type: array
-                items: { type: string }
-                example: ["query", "page"]
-              msg:
-                type: string
-                example: "Invalid page size."
-              type:
-                type: string
-                example: "value_error"
+        min_workers:
+          type: integer
+          nullable: true
+          description: Minimum number of workers when autoscaling.
+          example: 2
+        max_workers:
+          type: integer
+          nullable: true
+          description: Maximum number of workers when autoscaling.
+          example: 8
 
-    UnauthorizedError:
+    AwsAttributes:
       type: object
+      nullable: true
+      description: AWS-specific cluster attributes.
+      properties:
+        availability:
+          type: string
+          nullable: true
+          description: Availability type (e.g., SPOT, ON_DEMAND, SPOT_WITH_FALLBACK).
+          example: "SPOT_WITH_FALLBACK"
+        ebs_volume_count:
+          type: integer
+          nullable: true
+          description: Number of EBS volumes to attach.
+          example: 1
+        ebs_volume_iops:
+          type: integer
+          nullable: true
+          description: IOPS for EBS volumes (for io1/io2 types).
+        ebs_volume_size:
+          type: integer
+          nullable: true
+          description: Size of each EBS volume in GB.
+          example: 100
+        ebs_volume_throughput:
+          type: integer
+          nullable: true
+          description: Throughput for EBS volumes in MB/s.
+        ebs_volume_type:
+          type: string
+          nullable: true
+          description: Type of EBS volume.
+          example: "GENERAL_PURPOSE_SSD"
+        first_on_demand:
+          type: integer
+          nullable: true
+          description: Number of nodes to place on on-demand instances.
+          example: 1
+        spot_bid_price_percent:
+          type: integer
+          nullable: true
+          description: Maximum percentage of on-demand price to bid for spot instances.
+          example: 100
+
+    AzureAttributes:
+      type: object
+      nullable: true
+      description: Azure-specific cluster attributes.
+      properties:
+        availability:
+          type: string
+          nullable: true
+          description: Availability type.
+        first_on_demand:
+          type: integer
+          nullable: true
+          description: Number of nodes to place on on-demand instances.
+        spot_bid_max_price:
+          type: integer
+          nullable: true
+          description: Maximum price for spot instances.
+
+    ClusterLogConf:
+      type: object
+      nullable: true
+      description: Cluster log configuration.
+      properties:
+        dbfs:
+          $ref: '#/components/schemas/DbfsLogConf'
+        s3:
+          $ref: '#/components/schemas/S3LogConf'
+        volumes:
+          $ref: '#/components/schemas/VolumesLogConf'
+
+    DbfsLogConf:
+      type: object
+      nullable: true
+      description: DBFS log destination configuration.
+      properties:
+        destination:
+          type: string
+          nullable: true
+          description: DBFS path for cluster logs.
+          example: "dbfs:/cluster-logs"
+
+    S3LogConf:
+      type: object
+      nullable: true
+      description: S3 log destination configuration.
+      properties:
+        destination:
+          type: string
+          nullable: true
+          description: S3 URI for cluster logs.
+          example: "s3://my-bucket/cluster-logs"
+        canned_acl:
+          type: string
+          nullable: true
+          description: Canned ACL for S3 objects.
+          example: "bucket-owner-full-control"
+        enable_encryption:
+          type: boolean
+          nullable: true
+          description: Whether to enable encryption.
+          example: true
+        encryption_type:
+          type: string
+          nullable: true
+          description: Type of encryption to use.
+        endpoint:
+          type: string
+          nullable: true
+          description: Custom S3 endpoint.
+        kms_key:
+          type: string
+          nullable: true
+          description: KMS key for encryption.
+        region:
+          type: string
+          nullable: true
+          description: AWS region for the S3 bucket.
+          example: "us-east-1"
+
+    VolumesLogConf:
+      type: object
+      nullable: true
+      description: Unity Catalog Volumes log destination configuration.
+      properties:
+        destination:
+          type: string
+          nullable: true
+          description: Volumes path for cluster logs.
+
+    ClusterSpec:
+      type: object
+      nullable: true
+      description: Additional cluster specification details.
+      properties:
+        enable_elastic_disk:
+          type: boolean
+          nullable: true
+          description: Whether to enable elastic disk.
+        node_type_id:
+          type: string
+          nullable: true
+          description: Worker node type.
+        num_workers:
+          type: integer
+          nullable: true
+          description: Number of workers.
+        driver_node_type_id:
+          type: string
+          nullable: true
+          description: Driver node type.
+
+    RecommendationResult:
+      type: object
+      description: Response wrapper containing recommendation details.
+      properties:
+        result:
+          $ref: '#/components/schemas/RecommendationDetails'
+
+    ErrorResponse:
+      type: object
+      description: Standard error response.
       properties:
         detail:
           type: string
-          example: "Authentication required."
-
-    NotFoundError:
-      type: object
-      properties:
-        detail:
-          type: string
+          description: Human-readable error message.
           example: "The requested resource was not found."
 
-    ConflictError:
+    ValidationErrorResponse:
       type: object
-      properties:
-        detail:
-          type: string
-          example: "Project with this name already exists."
-
-    ValidationError:
-      type: object
+      description: Validation error response with field-level details.
       properties:
         detail:
           type: array
@@ -389,18 +1291,15 @@ components:
             properties:
               loc:
                 type: array
-                items: { type: string }
+                items:
+                  type: string
+                description: Location of the error in the request.
                 example: ["body", "name"]
               msg:
                 type: string
+                description: Error message.
                 example: "This field is required."
               type:
                 type: string
+                description: Error type identifier.
                 example: "value_error.missing"
-
-    ServiceUnavailableError:
-      type: object
-      properties:
-        detail:
-          type: string
-          example: "We have been notified of the error and are looking into the issue."
