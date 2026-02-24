@@ -64,7 +64,6 @@ paths:
                         settings:
                           sla_minutes: 60
                           auto_apply_recs: false
-                          optimize_instance_size: true
                         metrics:
                           job_success_rate_percent: 98
                           sla_met_percent: 95
@@ -83,7 +82,6 @@ paths:
                         settings:
                           sla_minutes: 120
                           auto_apply_recs: true
-                          optimize_instance_size: false
                         metrics:
                           job_success_rate_percent: 100
                           sla_met_percent: 100
@@ -124,7 +122,6 @@ paths:
                   settings:
                     sla_minutes: 60
                     auto_apply_recs: false
-                    optimize_instance_size: true
       responses:
         '200':
           description: Project created successfully.
@@ -151,7 +148,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics: null
         '401': { $ref: '#/components/responses/Unauthorized' }
         '409': { $ref: '#/components/responses/Conflict' }
@@ -196,7 +192,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics:
                         job_success_rate_percent: 98
                         sla_met_percent: 95
@@ -219,7 +214,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics:
                         job_success_rate_percent: 98
                         sla_met_percent: 95
@@ -297,7 +291,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics:
                         job_success_rate_percent: 98
                         sla_met_percent: 95
@@ -459,7 +452,6 @@ paths:
                         settings:
                           sla_minutes: 60
                           auto_apply_recs: false
-                          optimize_instance_size: true
                 failure:
                   summary: Failed recommendation
                   value:
@@ -746,13 +738,6 @@ components:
           nullable: true
           description: Whether to automatically apply recommendations when generated.
           example: false
-        optimize_instance_size:
-          type: boolean
-          nullable: true
-          description: >
-            Whether to optimize the instance size of worker nodes. When enabled,
-            Slingshot will optimize both the number of workers and the instance size.
-          example: true
 
     ProjectMetrics:
       type: object
@@ -932,13 +917,6 @@ components:
           nullable: true
           description: Whether to automatically apply recommendations when generated.
           example: false
-        optimize_instance_size:
-          type: boolean
-          nullable: true
-          description: >
-            Whether to optimize the instance size of worker nodes. When enabled,
-            Slingshot optimizes both the number of workers and the instance size.
-          example: true
 
     ProjectPage:
       type: object

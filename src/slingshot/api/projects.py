@@ -143,15 +143,6 @@ class ProjectAPI:
                     cost. Defaults to None.
                 - auto_apply_recs (Optional[bool], optional): Automatically apply recommendations.
                     Defaults to False.
-                - optimize_instance_size (Optional[bool], optional): Whether to optimize the instance size.
-                   If set to True, Slingshot will attempt to optimize the
-                    instance size of the worker nodes while maintaining the
-                    instance type (e.g., `r5.xlarge`, `r5.2xlarge`, `r5.4xlarge`).
-                    Defaults to False.
-
-                    Note: **Slingshot always optimizes the number of worker
-                    nodes**. When this option is enabled, Slingshot will
-                    also optimize the worker instance size.
 
         Returns:
             ProjectSchema: The details of the newly created project.
@@ -177,7 +168,6 @@ class ProjectAPI:
             for key in (
                 "sla_minutes",
                 "auto_apply_recs",
-                "optimize_instance_size",
             ):
                 _dict_set_if_not_unset(settings, json["settings"], key)
         elif settings is None:
@@ -310,14 +300,6 @@ class ProjectAPI:
                     an expected upper bound when optimizing the job for lowest
                     cost.
                 - auto_apply_recs (Optional[bool], optional): Automatically apply recommendations.
-                - optimize_instance_size (Optional[bool], optional): Whether to optimize the instance size.
-                    If set to True, Slingshot will attempt to optimize the
-                    instance size of the worker nodes while maintaining the
-                    instance type (e.g., `r5.xlarge`, `r5.2xlarge`, `r5.4xlarge`).
-
-                    Note: **Slingshot always optimizes the number of worker
-                    nodes**. When this option is enabled, Slingshot will
-                    also optimize the worker instance size.
 
         Returns:
             ProjectSchema: The details of the updated project.
@@ -345,7 +327,6 @@ class ProjectAPI:
             for key in (
                 "sla_minutes",
                 "auto_apply_recs",
-                "optimize_instance_size",
             ):
                 _dict_set_if_not_unset(settings, json["settings"], key)
         elif settings is None:

@@ -25,7 +25,6 @@ class AssignSettingsSchema(TypedDict):
 
     sla_minutes: NotRequired[Optional[int]]
     auto_apply_recs: NotRequired[Optional[bool]]
-    optimize_instance_size: NotRequired[Optional[bool]]
 
 
 class ProjectSchema(TypedDict):
@@ -53,7 +52,6 @@ class ProjectSettingsSchema(TypedDict):
 
     sla_minutes: Optional[int]
     auto_apply_recs: Optional[bool]
-    optimize_instance_size: Optional[bool]
 
 
 class ProjectMetricsSchema(TypedDict):
@@ -195,7 +193,6 @@ class SettingsSchema(TypedDict):
 
     sla_minutes: Optional[int]
     auto_apply_recs: Optional[bool]
-    optimize_instance_size: Optional[bool]
 
 
 QueryParams = Mapping[str, Union[str, list[str]]]
