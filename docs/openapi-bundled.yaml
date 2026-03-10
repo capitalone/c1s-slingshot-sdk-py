@@ -202,15 +202,6 @@ paths:
                               description: Whether to automatically apply recommendations
                                 when generated.
                               example: false
-                            optimize_instance_size:
-                              type: boolean
-                              nullable: true
-                              description: 'Whether to optimize the instance size
-                                of worker nodes. When enabled, Slingshot will optimize
-                                both the number of workers and the instance size.
-
-                                '
-                              example: true
                         metrics:
                           type: object
                           nullable: true
@@ -310,7 +301,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics:
                         job_success_rate_percent: 98
                         sla_met_percent: 95
@@ -329,7 +319,6 @@ paths:
                       settings:
                         sla_minutes: 120
                         auto_apply_recs: true
-                        optimize_instance_size: false
                       metrics:
                         job_success_rate_percent: 100
                         sla_met_percent: 100
@@ -441,15 +430,6 @@ paths:
                       description: Whether to automatically apply recommendations
                         when generated.
                       example: false
-                    optimize_instance_size:
-                      type: boolean
-                      nullable: true
-                      description: 'Whether to optimize the instance size of worker
-                        nodes. When enabled, Slingshot optimizes both the number of
-                        workers and the instance size.
-
-                        '
-                      example: true
             examples:
               minimal:
                 summary: Minimal project creation
@@ -468,7 +448,6 @@ paths:
                   settings:
                     sla_minutes: 60
                     auto_apply_recs: false
-                    optimize_instance_size: true
       responses:
         '200':
           description: Project created successfully.
@@ -576,15 +555,6 @@ paths:
                             description: Whether to automatically apply recommendations
                               when generated.
                             example: false
-                          optimize_instance_size:
-                            type: boolean
-                            nullable: true
-                            description: 'Whether to optimize the instance size of
-                              worker nodes. When enabled, Slingshot will optimize
-                              both the number of workers and the instance size.
-
-                              '
-                            example: true
                       metrics:
                         type: object
                         nullable: true
@@ -682,7 +652,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics: null
         '401':
           description: Authentication required or invalid credentials.
@@ -903,15 +872,6 @@ paths:
                             description: Whether to automatically apply recommendations
                               when generated.
                             example: false
-                          optimize_instance_size:
-                            type: boolean
-                            nullable: true
-                            description: 'Whether to optimize the instance size of
-                              worker nodes. When enabled, Slingshot will optimize
-                              both the number of workers and the instance size.
-
-                              '
-                            example: true
                       metrics:
                         type: object
                         nullable: true
@@ -1009,7 +969,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics:
                         job_success_rate_percent: 98
                         sla_met_percent: 95
@@ -1032,7 +991,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics:
                         job_success_rate_percent: 98
                         sla_met_percent: 95
@@ -1175,15 +1133,6 @@ paths:
                       description: Whether to automatically apply recommendations
                         when generated.
                       example: false
-                    optimize_instance_size:
-                      type: boolean
-                      nullable: true
-                      description: 'Whether to optimize the instance size of worker
-                        nodes. When enabled, Slingshot optimizes both the number of
-                        workers and the instance size.
-
-                        '
-                      example: true
             examples:
               update_description:
                 summary: Update project description
@@ -1307,15 +1256,6 @@ paths:
                             description: Whether to automatically apply recommendations
                               when generated.
                             example: false
-                          optimize_instance_size:
-                            type: boolean
-                            nullable: true
-                            description: 'Whether to optimize the instance size of
-                              worker nodes. When enabled, Slingshot will optimize
-                              both the number of workers and the instance size.
-
-                              '
-                            example: true
                       metrics:
                         type: object
                         nullable: true
@@ -1412,7 +1352,6 @@ paths:
                       settings:
                         sla_minutes: 60
                         auto_apply_recs: false
-                        optimize_instance_size: true
                       metrics:
                         job_success_rate_percent: 98
                         sla_met_percent: 95
@@ -1927,15 +1866,6 @@ paths:
                                 description: Whether to automatically apply recommendations
                                   when generated.
                                 example: false
-                              optimize_instance_size:
-                                type: boolean
-                                nullable: true
-                                description: 'Whether to optimize the instance size
-                                  of worker nodes. When enabled, Slingshot will optimize
-                                  both the number of workers and the instance size.
-
-                                  '
-                                example: true
               examples:
                 sample:
                   summary: Newly created recommendation (pending state)
@@ -2343,15 +2273,6 @@ paths:
                                 description: Whether to automatically apply recommendations
                                   when generated.
                                 example: false
-                              optimize_instance_size:
-                                type: boolean
-                                nullable: true
-                                description: 'Whether to optimize the instance size
-                                  of worker nodes. When enabled, Slingshot will optimize
-                                  both the number of workers and the instance size.
-
-                                  '
-                                example: true
               examples:
                 pending:
                   summary: Recommendation still processing
@@ -2394,7 +2315,6 @@ paths:
                         settings:
                           sla_minutes: 60
                           auto_apply_recs: false
-                          optimize_instance_size: true
                 failure:
                   summary: Failed recommendation
                   value:
@@ -2833,15 +2753,6 @@ components:
               nullable: true
               description: Whether to automatically apply recommendations when generated.
               example: false
-            optimize_instance_size:
-              type: boolean
-              nullable: true
-              description: 'Whether to optimize the instance size of worker nodes.
-                When enabled, Slingshot will optimize both the number of workers and
-                the instance size.
-
-                '
-              example: true
         metrics:
           type: object
           nullable: true
@@ -2936,15 +2847,6 @@ components:
           nullable: true
           description: Whether to automatically apply recommendations when generated.
           example: false
-        optimize_instance_size:
-          type: boolean
-          nullable: true
-          description: 'Whether to optimize the instance size of worker nodes. When
-            enabled, Slingshot will optimize both the number of workers and the instance
-            size.
-
-            '
-          example: true
     ProjectMetrics:
       type: object
       nullable: true
@@ -3082,15 +2984,6 @@ components:
               nullable: true
               description: Whether to automatically apply recommendations when generated.
               example: false
-            optimize_instance_size:
-              type: boolean
-              nullable: true
-              description: 'Whether to optimize the instance size of worker nodes.
-                When enabled, Slingshot optimizes both the number of workers and the
-                instance size.
-
-                '
-              example: true
     ProjectUpdate:
       type: object
       description: 'Request body for updating a Slingshot project. All fields are
@@ -3150,15 +3043,6 @@ components:
               nullable: true
               description: Whether to automatically apply recommendations when generated.
               example: false
-            optimize_instance_size:
-              type: boolean
-              nullable: true
-              description: 'Whether to optimize the instance size of worker nodes.
-                When enabled, Slingshot optimizes both the number of workers and the
-                instance size.
-
-                '
-              example: true
     AssignSettings:
       type: object
       nullable: true
@@ -3177,15 +3061,6 @@ components:
           nullable: true
           description: Whether to automatically apply recommendations when generated.
           example: false
-        optimize_instance_size:
-          type: boolean
-          nullable: true
-          description: 'Whether to optimize the instance size of worker nodes. When
-            enabled, Slingshot optimizes both the number of workers and the instance
-            size.
-
-            '
-          example: true
     ProjectPage:
       type: object
       description: A paginated list of projects.
@@ -3301,15 +3176,6 @@ components:
                     description: Whether to automatically apply recommendations when
                       generated.
                     example: false
-                  optimize_instance_size:
-                    type: boolean
-                    nullable: true
-                    description: 'Whether to optimize the instance size of worker
-                      nodes. When enabled, Slingshot will optimize both the number
-                      of workers and the instance size.
-
-                      '
-                    example: true
               metrics:
                 type: object
                 nullable: true
@@ -3486,15 +3352,6 @@ components:
                   description: Whether to automatically apply recommendations when
                     generated.
                   example: false
-                optimize_instance_size:
-                  type: boolean
-                  nullable: true
-                  description: 'Whether to optimize the instance size of worker nodes.
-                    When enabled, Slingshot will optimize both the number of workers
-                    and the instance size.
-
-                    '
-                  example: true
             metrics:
               type: object
               nullable: true
@@ -3855,15 +3712,6 @@ components:
                   description: Whether to automatically apply recommendations when
                     generated.
                   example: false
-                optimize_instance_size:
-                  type: boolean
-                  nullable: true
-                  description: 'Whether to optimize the instance size of worker nodes.
-                    When enabled, Slingshot will optimize both the number of workers
-                    and the instance size.
-
-                    '
-                  example: true
     Recommendation:
       type: object
       nullable: true
@@ -4092,15 +3940,6 @@ components:
               nullable: true
               description: Whether to automatically apply recommendations when generated.
               example: false
-            optimize_instance_size:
-              type: boolean
-              nullable: true
-              description: 'Whether to optimize the instance size of worker nodes.
-                When enabled, Slingshot will optimize both the number of workers and
-                the instance size.
-
-                '
-              example: true
     RecommendationMetrics:
       type: object
       nullable: true
@@ -4791,15 +4630,6 @@ components:
                       description: Whether to automatically apply recommendations
                         when generated.
                       example: false
-                    optimize_instance_size:
-                      type: boolean
-                      nullable: true
-                      description: 'Whether to optimize the instance size of worker
-                        nodes. When enabled, Slingshot will optimize both the number
-                        of workers and the instance size.
-
-                        '
-                      example: true
     ErrorResponse:
       type: object
       description: Standard error response.

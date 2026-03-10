@@ -2,6 +2,12 @@
 
 <!-- BELOW IS AUTOMATICALLY UPDATED BY COMMITIZEN -->
 ---
+## v2.2.0 (2026-02-24)
+
+### Feat
+
+- Remove optimize_instance_size setting (#73)
+
 ## v2.1.0 (2026-01-16)
 
 ### Feat
