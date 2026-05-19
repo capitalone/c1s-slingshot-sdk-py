@@ -1,3 +1,8 @@
+# Project Status: Archived
+This project is now archived and in **read-only** mode. The maintainers are no longer monitoring this repository for issues or pull requests.
+
+---
+
 # Capital One Slingshot SDK Python Library
 
 ![Capital One Slingshot Logo](https://raw.githubusercontent.com/capitalone/c1s-slingshot-sdk-py/main/docs/_static/slingshot-small-logo.png)
